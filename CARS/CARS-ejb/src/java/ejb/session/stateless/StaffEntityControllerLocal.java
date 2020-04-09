@@ -1,0 +1,30 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package ejb.session.stateless;
+
+import entity.StaffEntity;
+import java.util.List;
+import javax.ejb.Local;
+import util.exception.StaffNotFoundException;
+
+/**
+ *
+ * @author gem
+ */
+@Local
+public interface StaffEntityControllerLocal {
+
+    long createNewStaffEntity(StaffEntity staffEntity);
+
+    List<StaffEntity> retrieveAllStaffEntity();
+
+    StaffEntity retrieveStaffByStaffId(long staffId) throws StaffNotFoundException;
+
+    void updateStaffEntity(StaffEntity staffEntity);
+
+    void deleteStaffEntityById(StaffEntity staffId);
+    
+}
