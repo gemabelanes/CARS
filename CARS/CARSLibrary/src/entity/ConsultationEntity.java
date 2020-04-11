@@ -9,15 +9,19 @@ import java.io.Serializable;
 import java.sql.Time;
 import java.util.Date;
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 /**
  *
  * @author gem
  */
+@Entity
 public class ConsultationEntity implements Serializable{
     private static final long serialVersionUID = 1L;
     @Id
@@ -26,10 +30,11 @@ public class ConsultationEntity implements Serializable{
     @Column(nullable=false)
     private Integer queueNum;
     @Column(nullable=false)
-    private String password;
-    @Column(nullable=false)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date date;
+    @Column(nullable=false)
     private Time time;
+    
     
     
     @ManyToOne
@@ -40,11 +45,10 @@ public class ConsultationEntity implements Serializable{
     public ConsultationEntity() {
     }
 
-    public ConsultationEntity(Integer queueNum, PatientEntity patientEntity, DoctorEntity doctorEntity, String password, Date date, Time time) {
+    public ConsultationEntity(Integer queueNum, PatientEntity patientEntity, DoctorEntity doctorEntity, Date date, Time time) {
         this.queueNum = queueNum;
         this.patientEntity = patientEntity;
         this.doctorEntity = doctorEntity;
-        this.password = password;
         this.date = date;
         this.time = time;
     }
@@ -86,15 +90,6 @@ public class ConsultationEntity implements Serializable{
     public void setDoctorEntity(DoctorEntity doctorEntity) {
         this.doctorEntity = doctorEntity;
     }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-    
     
     
     @Override

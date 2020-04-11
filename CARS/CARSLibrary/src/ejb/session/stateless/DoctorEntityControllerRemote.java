@@ -23,4 +23,6 @@ public interface DoctorEntityControllerRemote  {
 
     DoctorEntity retrieveDoctorEntityById(long doctorId) throws DoctorNotFoundException;
     
+    void updateDoctorEntity(DoctorEntity doctorEntity);
+    
 }

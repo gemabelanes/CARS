@@ -9,12 +9,15 @@ import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 import util.exception.DoctorAddAppointmentException;
 import util.exception.DoctorAddConsultationException;
+import util.exception.DoctorRemoveAppointmentException;
 import util.exception.DoctorRemoveConsultationException;
 
 /**
@@ -36,11 +39,13 @@ public class DoctorEntity implements Serializable {
     private String registration;
     @Column(nullable=false)
     private String qualifications;
+    @Transient
+    private String fullName;
     
-    @OneToMany(mappedBy = "doctorConsultations")
+    @OneToMany(mappedBy = "doctorEntity", fetch = FetchType.EAGER)
     private List<ConsultationEntity> doctorConsultations;
     
-    @OneToMany(mappedBy = "doctorAppointments")
+    @OneToMany(mappedBy = "doctorEntity", fetch = FetchType.EAGER)
     private List<AppointmentEntity> doctorAppointments;
     
     public DoctorEntity(){
@@ -51,6 +56,15 @@ public class DoctorEntity implements Serializable {
         this.lastName = lastName;
         this.registration = registration;
         this.qualifications = qualifications;
+        this.fullName = firstName + " " + lastName;
+    }
+
+    public String getFullName() {
+        return firstName + " " + lastName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
     public Long getDoctorId() {
@@ -67,6 +81,7 @@ public class DoctorEntity implements Serializable {
 
     public void setFirstName(String firstName) {
         this.firstName = firstName;
+        this.fullName = firstName + " " + lastName;
     }
 
     public String getLastName() {
@@ -75,6 +90,7 @@ public class DoctorEntity implements Serializable {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+        this.fullName = firstName + " " + lastName;
     }
 
     public String getRegistration() {
@@ -119,6 +135,24 @@ public class DoctorEntity implements Serializable {
         
         return true;
     }
+
+    public List<ConsultationEntity> getDoctorConsultations() {
+        return doctorConsultations;
+    }
+
+    public void setDoctorConsultations(List<ConsultationEntity> doctorConsultations) {
+        this.doctorConsultations = doctorConsultations;
+    }
+
+    public List<AppointmentEntity> getDoctorAppointments() {
+        return doctorAppointments;
+    }
+
+    public void setDoctorAppointments(List<AppointmentEntity> doctorAppointments) {
+        this.doctorAppointments = doctorAppointments;
+    }
+    
+    
     
     public List<ConsultationEntity> getConsultations() {
         return doctorConsultations;
@@ -156,7 +190,7 @@ public class DoctorEntity implements Serializable {
     
     public void removeAppointment(AppointmentEntity appointmentEntity) throws DoctorRemoveAppointmentException {
         if(appointmentEntity != null && this.doctorAppointments.contains(appointmentEntity)) {
-            this.doctorAppointments.remove(consultationEntity);
+            this.doctorAppointments.remove(appointmentEntity);
         } else {
             throw new DoctorRemoveAppointmentException("Doctor ID : " + this.getDoctorId()
                                                         + " does not contain Appointment ID" + appointmentEntity.getAppointmentId());

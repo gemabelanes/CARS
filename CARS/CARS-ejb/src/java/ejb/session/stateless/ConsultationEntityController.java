@@ -7,6 +7,7 @@ package ejb.session.stateless;
 
 import entity.ConsultationEntity;
 import entity.DoctorEntity;
+import entity.PatientEntity;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
