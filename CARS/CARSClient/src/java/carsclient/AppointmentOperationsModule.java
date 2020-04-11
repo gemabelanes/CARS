@@ -42,7 +42,12 @@ public class AppointmentOperationsModule {
     SimpleDateFormat sdf2;
     SimpleDateFormat sdf3;
 
+    public AppointmentOperationsModule() {
+        
+    }
+
     public AppointmentOperationsModule(AppointmentEntityControllerRemote appointmentEntityControllerRemote, PatientEntityControllerRemote patientEntityControllerRemote, DoctorEntityControllerRemote doctorEntityControllerRemote) {
+        this();
         this.appointmentEntityControllerRemote = appointmentEntityControllerRemote;
         this.patientEntityControllerRemote = patientEntityControllerRemote;
         this.doctorEntityControllerRemote = doctorEntityControllerRemote;
@@ -163,9 +168,8 @@ public class AppointmentOperationsModule {
             }
         }
       
-        //SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
         Date today = Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant());
-        System.out.println("Todays day is : " + new SimpleDateFormat("EEEE").format(today));
+        //System.out.println("Todays day is : " + new SimpleDateFormat("EEEE").format(today));
         while(true) {
             while(true) {
                 try {
@@ -178,7 +182,7 @@ public class AppointmentOperationsModule {
                     Calendar tempDow = Calendar.getInstance();
                     tempDow.setTime(selectedDate);
                     int dayOfWeek = tempDow.get(Calendar.DAY_OF_WEEK);
-                    System.out.println("DayOfWeek is " + new SimpleDateFormat("EEEE").format(selectedDate));
+                    //System.out.println("DayOfWeek is " + new SimpleDateFormat("EEEE").format(selectedDate));
                     if(dayOfWeek == 7 || dayOfWeek == 1) {
                         System.out.println("The clinic is closed on weekends, please enter another date. (Enter 0 to return to Appointment Operations Menu)");
                     } else {
@@ -270,8 +274,6 @@ public class AppointmentOperationsModule {
                             PatientEntity patientEntity = patientEntityControllerRemote.retrievePatientEntityByIc(patientIc);
                             AppointmentEntity newAppointment = new AppointmentEntity(selectedDate, selectedTime, patientEntity, doctorEntity);
                             long createNewAppointment = appointmentEntityControllerRemote.createAppointmentEntity(newAppointment);
-                            //patientEntityControllerRemote.updatePatientEntity(patientEntity);
-                            //doctorEntityControllerRemote.updateDoctorEntity(doctorEntity);
                             System.out.println(patientEntity.getFullName() + " appointment with DR." + doctorEntity.getFullName() + " at " + sdf3.format(selectedTime) + " on " + sdf2.format(selectedDate) + " has been added.\n");
                             break;
                         } catch (PatientNotFoundException ex) {

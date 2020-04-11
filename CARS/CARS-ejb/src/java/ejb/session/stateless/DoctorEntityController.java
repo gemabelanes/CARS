@@ -5,7 +5,11 @@
  */
 package ejb.session.stateless;
 
+import entity.AppointmentEntity;
+import entity.ConsultationEntity;
 import entity.DoctorEntity;
+import java.sql.Time;
+import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.Local;
 import javax.ejb.Remote;
@@ -52,6 +56,7 @@ public class DoctorEntityController implements DoctorEntityControllerRemote, Doc
             return doctorEntity;
         }
     }
+    
 
     @Override
     public void updateDoctorEntity(DoctorEntity doctorEntity) {
@@ -63,6 +68,31 @@ public class DoctorEntityController implements DoctorEntityControllerRemote, Doc
         DoctorEntity doctorEntity = entityManager.find(DoctorEntity.class, doctorId);
         entityManager.remove(doctorEntity);
         entityManager.flush();
+    }
+
+    @Override
+    public boolean doctorAvailableAtTime(DoctorEntity doctorEntity, Time time) {
+        DoctorEntity fetchDoctor = entityManager.find(DoctorEntity.class, doctorEntity.getDoctorId());
+ 
+        fetchDoctor.getConsultations().size();
+        fetchDoctor.getDoctorAppointments().size();
+        
+        List<ConsultationEntity> doctorConsultations = fetchDoctor.getDoctorConsultations();
+        List<AppointmentEntity> doctorAppointments = fetchDoctor.getDoctorAppointments();
+
+        for(ConsultationEntity consultationEntity : doctorConsultations) {
+            if(consultationEntity.getTime().equals(time)) {
+                return false;
+            }
+        }
+
+        for(AppointmentEntity appointmentEntity : doctorAppointments) {
+            if(appointmentEntity.getTime().equals(time)) {
+                return false;
+            }
+        }
+        return true;
+            
     }
     
     

@@ -6,6 +6,7 @@
 package ejb.session.stateless;
 
 import entity.DoctorEntity;
+import java.sql.Time;
 import java.util.List;
 import javax.ejb.Remote;
 import util.exception.DoctorNotFoundException;
@@ -24,5 +25,8 @@ public interface DoctorEntityControllerRemote  {
     DoctorEntity retrieveDoctorEntityById(long doctorId) throws DoctorNotFoundException;
     
     void updateDoctorEntity(DoctorEntity doctorEntity);
+
+    boolean doctorAvailableAtTime(DoctorEntity doctorEntity, Time time);
+
     
 }

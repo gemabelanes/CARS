@@ -26,6 +26,7 @@ public class MainApp {
     private ConsultationEntityControllerRemote consultationEntityControllerRemote;
   
     private AppointmentOperationsModule appointmentOperationsModule;
+    private RegistrationOperationModule registrationOperationModule;
     
     private StaffEntity currentStaffEntity;
 
@@ -39,9 +40,11 @@ public class MainApp {
     
     public void runApp() {
         System.out.println("STARTING UP...");
-        System.out.println("RUNNING APPOINTMENT OPERATIONS MODULE TEST");
-        this.appointmentOperationsModule = new AppointmentOperationsModule(appointmentEntityControllerRemote, patientEntityControllerRemote, doctorEntityControllerRemote);
-        appointmentOperationsModule.appointmentMainMenu();
+        System.out.println("RUNNING REGISTRATION OPERATIONS MODULE TEST");
+        //this.appointmentOperationsModule = new AppointmentOperationsModule(appointmentEntityControllerRemote, patientEntityControllerRemote, doctorEntityControllerRemote);
+        //appointmentOperationsModule.appointmentMainMenu();
+        this.registrationOperationModule = new RegistrationOperationModule(appointmentEntityControllerRemote,patientEntityControllerRemote, doctorEntityControllerRemote, consultationEntityControllerRemote);
+        registrationOperationModule.registrationMainMenu();
         System.out.println("TERMINATING PROGRAM");
     }
     

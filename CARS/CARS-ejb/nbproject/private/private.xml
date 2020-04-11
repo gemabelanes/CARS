@@ -4,8 +4,8 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/Users/gem/Desktop/IS2103/Assignment2/CARS/CARS-ejb/src/java/ejb/session/stateless/AppointmentEntityController.java</file>
+            <file>file:/Users/gem/Desktop/IS2103/Assignment2/CARS/CARS-ejb/src/java/ejb/session/stateless/DoctorEntityController.java</file>
             <file>file:/Users/gem/Desktop/IS2103/Assignment2/CARS/CARS-ejb/src/java/ejb/singleton/DataInitializationSessionBean.java</file>
-            <file>file:/Users/gem/Desktop/IS2103/Assignment2/CARS/CARS-ejb/src/java/ejb/session/stateless/PatientEntityController.java</file>
         </group>
     </open-files>
 </project-private>

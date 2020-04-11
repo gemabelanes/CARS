@@ -70,6 +70,20 @@ public class PatientEntityController implements PatientEntityControllerRemote, P
             throw new PatientNotFoundException("Patient IC : " + patientIc + " does not exist!");
         }
     }
+
+    @Override
+    public boolean doesPatientExistByIc(String patientIc) {
+        Query query = entityManager.createQuery("SELECT p FROM PatientEntity p WHERE p.identityNumber = :inIdentityNumber");
+        query.setParameter("inIdentityNumber", patientIc);
+        System.err.println("QUERY SIZE IS : " + query.getResultList().size());
+        if(query.getResultList().isEmpty() || query.getResultList() == null ) {
+            return false;
+        }
+        return true;
+    }
+    
+    
+    
     
     
     

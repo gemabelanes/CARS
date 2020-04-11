@@ -28,5 +28,8 @@ public interface PatientEntityControllerRemote {
     void deletePatientEntityById(java.lang.Long patientId);
 
     PatientEntity retrievePatientEntityByIc(String patientIc) throws PatientNotFoundException;
+
+    boolean doesPatientExistByIc(String patientIc);
+
     
 }

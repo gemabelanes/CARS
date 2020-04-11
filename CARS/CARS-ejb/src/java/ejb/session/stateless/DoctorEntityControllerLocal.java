@@ -6,6 +6,7 @@
 package ejb.session.stateless;
 
 import entity.DoctorEntity;
+import java.sql.Time;
 import java.util.List;
 import javax.ejb.Local;
 import util.exception.DoctorNotFoundException;
@@ -26,5 +27,8 @@ public interface DoctorEntityControllerLocal {
     void updateDoctorEntity(DoctorEntity doctorEntity);
 
     void deleteDoctorEntityById(long doctorId);
+
+    boolean doctorAvailableAtTime(DoctorEntity doctorEntity, Time time);
+
     
 }
