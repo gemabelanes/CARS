@@ -32,6 +32,10 @@ public class MainApp {
     private RegistrationOperationModule registrationOperationModule;
     
     private StaffEntity currentStaffEntity;
+    
+    public MainApp()
+    {
+    }
 
     public MainApp(StaffEntityControllerRemote staffEntityControllerRemote, PatientEntityControllerRemote patientEntityControllerRemote, DoctorEntityControllerRemote doctorEntityControllerRemote, AppointmentEntityControllerRemote appointmentEntityControllerRemote, ConsultationEntityControllerRemote consultationEntityControllerRemote, QueueEntityControllerRemote queueEntityControllerRemote) {
         this.staffEntityControllerRemote = staffEntityControllerRemote;
