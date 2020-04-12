@@ -52,4 +52,76 @@ public class MainApp {
         System.out.println("TERMINATING PROGRAM");
     }
     
+    private void doLogin() throws InvalidLoginException
+    {
+        Scanner sc = new Scanner(System.in);
+        String username = "";
+        String password = "";
+        
+        System.out.println("*** CARS :: Login ***\n");
+        System.out.println("Enter username> ");
+        username = sc.nextLine().trim();
+        System.out.println("Enter password> ");
+        password = sc.nextLine().trim();
+        
+        if(username.length() > 0 && password.length() > 0)
+        {
+            currentStaffEntity = staffEntitySessionBeanRemote.staffLogin(username, password);
+        }
+        else
+        {
+            throw new InvalidLoginException("Missing login credential!");
+        }
+    }
+    
+    private void menuMain()
+    {
+        Scanner sc = new Scanner(System.in);
+        Integer response = 0;
+        
+        while(true)
+        {
+            System.out.println("*** CARS :: Main ***\n");
+            System.out.println("You are login as " + currentStaffEntity.getFirstName() + " " + currentStaffEntity.getLastName() + "\n");
+            System.out.println("1: Registration Operation");
+            System.out.println("2: Appointment Operation");
+            System.out.println("3: Administration Operation");
+            System.out.println("4: Logout\n");
+            response = 0;
+            
+            while (response < 1 || response > 4)
+            {
+                System.out.print("> ");
+                
+                response = sc.nextInt();
+                
+                if(response == 1)
+                {
+                    registrationModule.registrationMenuOperation();
+                }
+                else if(response == 2)
+                {
+                    appointmentModule.appointmentMenuOperation();
+                }
+                else if(response == 3)
+                {
+                    administrationModule.adminstrationMenuOperation();
+                }
+                else if(response == 4)
+                {
+                    break;
+                }
+                else
+                {
+                    System.out.println("Invalid option, please try again!\n");
+                }
+            }
+            
+            if(response == 4)
+            {
+                break;
+            }
+        }
+    }
+    
 }
