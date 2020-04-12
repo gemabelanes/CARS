@@ -9,7 +9,9 @@ import ejb.session.stateless.AppointmentEntityControllerRemote;
 import ejb.session.stateless.ConsultationEntityControllerRemote;
 import ejb.session.stateless.DoctorEntityControllerRemote;
 import ejb.session.stateless.PatientEntityControllerRemote;
+import ejb.session.stateless.QueueEntityControllerRemote;
 import ejb.session.stateless.StaffEntityControllerRemote;
+import java.text.ParseException;
 import javax.ejb.EJB;
 
 /**
@@ -28,10 +30,12 @@ public class Main {
     private static AppointmentEntityControllerRemote appointmentEntityControllerRemote;
     @EJB
     private static ConsultationEntityControllerRemote consultationEntityControllerRemote;
+    @EJB
+    private static QueueEntityControllerRemote queueEntityControllerRemote;
     
     
-    public static void main(String[] args) {
-        MainApp mainApp = new MainApp(staffEntityControllerRemote, patientEntityControllerRemote, doctorEntityControllerRemote, appointmentEntityControllerRemote, consultationEntityControllerRemote);
+    public static void main(String[] args) throws ParseException {
+        MainApp mainApp = new MainApp(staffEntityControllerRemote, patientEntityControllerRemote, doctorEntityControllerRemote, appointmentEntityControllerRemote, consultationEntityControllerRemote, queueEntityControllerRemote);
         mainApp.runApp();
     }
     

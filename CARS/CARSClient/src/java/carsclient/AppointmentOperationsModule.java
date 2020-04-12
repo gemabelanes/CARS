@@ -159,6 +159,7 @@ public class AppointmentOperationsModule {
                         break;
                     } catch (Exception ex) {
                         System.out.println("Please enter an integer. (Enter 0 to return to Appointment Operations Menu)");
+                        sc.nextLine();
                     }
                 }
                 doctorEntity = doctorEntityControllerRemote.retrieveDoctorEntityById(doctorId);

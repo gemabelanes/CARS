@@ -9,8 +9,10 @@ import ejb.session.stateless.AppointmentEntityControllerRemote;
 import ejb.session.stateless.ConsultationEntityControllerRemote;
 import ejb.session.stateless.DoctorEntityControllerRemote;
 import ejb.session.stateless.PatientEntityControllerRemote;
+import ejb.session.stateless.QueueEntityControllerRemote;
 import ejb.session.stateless.StaffEntityControllerRemote;
 import entity.StaffEntity;
+import java.text.ParseException;
 
 /**
  *
@@ -24,26 +26,28 @@ public class MainApp {
     private DoctorEntityControllerRemote doctorEntityControllerRemote;
     private AppointmentEntityControllerRemote appointmentEntityControllerRemote;
     private ConsultationEntityControllerRemote consultationEntityControllerRemote;
+    private QueueEntityControllerRemote queueEntityControllerRemote;
   
     private AppointmentOperationsModule appointmentOperationsModule;
     private RegistrationOperationModule registrationOperationModule;
     
     private StaffEntity currentStaffEntity;
 
-    public MainApp(StaffEntityControllerRemote staffEntityControllerRemote, PatientEntityControllerRemote patientEntityControllerRemote, DoctorEntityControllerRemote doctorEntityControllerRemote, AppointmentEntityControllerRemote appointmentEntityControllerRemote, ConsultationEntityControllerRemote consultationEntityControllerRemote) {
+    public MainApp(StaffEntityControllerRemote staffEntityControllerRemote, PatientEntityControllerRemote patientEntityControllerRemote, DoctorEntityControllerRemote doctorEntityControllerRemote, AppointmentEntityControllerRemote appointmentEntityControllerRemote, ConsultationEntityControllerRemote consultationEntityControllerRemote, QueueEntityControllerRemote queueEntityControllerRemote) {
         this.staffEntityControllerRemote = staffEntityControllerRemote;
         this.patientEntityControllerRemote = patientEntityControllerRemote;
         this.doctorEntityControllerRemote = doctorEntityControllerRemote;
         this.appointmentEntityControllerRemote = appointmentEntityControllerRemote;
         this.consultationEntityControllerRemote = consultationEntityControllerRemote;
+        this.queueEntityControllerRemote = queueEntityControllerRemote;
     }
     
-    public void runApp() {
+    public void runApp() throws ParseException {
         System.out.println("STARTING UP...");
         System.out.println("RUNNING REGISTRATION OPERATIONS MODULE TEST");
         //this.appointmentOperationsModule = new AppointmentOperationsModule(appointmentEntityControllerRemote, patientEntityControllerRemote, doctorEntityControllerRemote);
         //appointmentOperationsModule.appointmentMainMenu();
-        this.registrationOperationModule = new RegistrationOperationModule(appointmentEntityControllerRemote,patientEntityControllerRemote, doctorEntityControllerRemote, consultationEntityControllerRemote);
+        this.registrationOperationModule = new RegistrationOperationModule(appointmentEntityControllerRemote,patientEntityControllerRemote, doctorEntityControllerRemote, consultationEntityControllerRemote, queueEntityControllerRemote);
         registrationOperationModule.registrationMainMenu();
         System.out.println("TERMINATING PROGRAM");
     }

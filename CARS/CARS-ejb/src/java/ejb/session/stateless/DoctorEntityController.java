@@ -10,6 +10,7 @@ import entity.ConsultationEntity;
 import entity.DoctorEntity;
 import java.sql.Time;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.ejb.Local;
 import javax.ejb.Remote;
@@ -71,7 +72,7 @@ public class DoctorEntityController implements DoctorEntityControllerRemote, Doc
     }
 
     @Override
-    public boolean doctorAvailableAtTime(DoctorEntity doctorEntity, Time time) {
+    public boolean doctorAvailableAtTime(DoctorEntity doctorEntity, Time time, Date date) {
         DoctorEntity fetchDoctor = entityManager.find(DoctorEntity.class, doctorEntity.getDoctorId());
  
         fetchDoctor.getConsultations().size();
@@ -81,13 +82,13 @@ public class DoctorEntityController implements DoctorEntityControllerRemote, Doc
         List<AppointmentEntity> doctorAppointments = fetchDoctor.getDoctorAppointments();
 
         for(ConsultationEntity consultationEntity : doctorConsultations) {
-            if(consultationEntity.getTime().equals(time)) {
+            if(consultationEntity.getDate().equals(date) && consultationEntity.getTime().equals(time)) {
                 return false;
             }
         }
 
         for(AppointmentEntity appointmentEntity : doctorAppointments) {
-            if(appointmentEntity.getTime().equals(time)) {
+            if(appointmentEntity.getDate().equals(date) && appointmentEntity.getTime().equals(time)) {
                 return false;
             }
         }

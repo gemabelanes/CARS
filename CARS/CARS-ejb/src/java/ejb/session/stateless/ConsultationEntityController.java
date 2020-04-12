@@ -46,6 +46,8 @@ public class ConsultationEntityController implements ConsultationEntityControlle
             doctorEntity.addConsultation(consultationEntity);
             patientEntity.addConsultation(consultationEntity);
             entityManager.persist(consultationEntity);
+            entityManager.merge(doctorEntity);
+            entityManager.merge(patientEntity);
             entityManager.flush();
             return consultationEntity.getConsultationId();
         } catch (DoctorAddConsultationException | PatientAddConsultationException ex) {
@@ -85,6 +87,8 @@ public class ConsultationEntityController implements ConsultationEntityControlle
         PatientEntity patientEntity = consultationEntity.getPatientEntity();
         doctorEntity.removeConsultation(consultationEntity);
         patientEntity.removeConsultation(consultationEntity);
+        entityManager.merge(doctorEntity);
+        entityManager.merge(patientEntity);
         entityManager.remove(consultationEntity);
         entityManager.flush();
 
