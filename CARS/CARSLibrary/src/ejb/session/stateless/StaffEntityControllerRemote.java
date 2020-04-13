@@ -30,6 +30,6 @@ public interface StaffEntityControllerRemote {
 
     void updateStaffEntity(StaffEntity staffEntity);
 
-    void deleteStaffEntityById(StaffEntity staffId);
+    void deleteStaffEntityById(StaffEntity staffId) throws StaffNotFoundException;
     
 }
