@@ -5,9 +5,13 @@
  */
 package ejb.session.stateless;
 
+import entity.DoctorEntity;
 import entity.PatientEntity;
+import java.sql.Date;
+import java.sql.Time;
 import java.util.List;
 import javax.ejb.Remote;
+import util.exception.InvalidLoginException;
 import util.exception.PatientNotFoundException;
 
 /**
@@ -30,6 +34,10 @@ public interface PatientEntityControllerRemote {
     PatientEntity retrievePatientEntityByIc(String patientIc) throws PatientNotFoundException;
 
     boolean doesPatientExistByIc(String patientIc);
+
+    boolean patientAvailableAtTime(entity.PatientEntity patientEntity, Time time, java.util.Date date);
+
+    PatientEntity patientLogin(String username, String password) throws InvalidLoginException;
 
     
 }

@@ -5,11 +5,13 @@
  */
 package carsclient;
 
+import com.sun.istack.Nullable;
 import ejb.session.stateless.AppointmentEntityControllerRemote;
 import ejb.session.stateless.ConsultationEntityControllerRemote;
 import ejb.session.stateless.DoctorEntityControllerRemote;
 import ejb.session.stateless.PatientEntityControllerRemote;
 import ejb.session.stateless.QueueEntityControllerRemote;
+import entity.AppointmentEntity;
 import entity.ConsultationEntity;
 import entity.DoctorEntity;
 import entity.PatientEntity;
@@ -23,9 +25,11 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import util.exception.AppointmentNotFoundException;
 import util.exception.CreateConsultationException;
 import util.exception.DoctorNotFoundException;
 import util.exception.PatientNotFoundException;
@@ -44,19 +48,32 @@ public class RegistrationOperationModule {
     
     SimpleDateFormat sdf2;
     SimpleDateFormat sdf3;
+    Date today;
+    String todayString;
+    Date todayFormatted;
+    
+    PatientEntity loggedInPatient;
+                    
 
     public RegistrationOperationModule() {
+        sdf2 = new SimpleDateFormat("yyyy-MM-dd");
+        sdf3 = new SimpleDateFormat("HH:mm");
+        try {
+            fetchToday();
+        } catch (ParseException ex) {
+            Logger.getLogger(RegistrationOperationModule.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
-    public RegistrationOperationModule(AppointmentEntityControllerRemote appointmentEntityControllerRemote, PatientEntityControllerRemote patientEntityControllerRemote, DoctorEntityControllerRemote doctorEntityControllerRemote, ConsultationEntityControllerRemote consultationEntityControllerRemote, QueueEntityControllerRemote queueEntityControllerRemote) {
+    public RegistrationOperationModule(AppointmentEntityControllerRemote appointmentEntityControllerRemote, PatientEntityControllerRemote patientEntityControllerRemote, DoctorEntityControllerRemote doctorEntityControllerRemote, ConsultationEntityControllerRemote consultationEntityControllerRemote, QueueEntityControllerRemote queueEntityControllerRemote, @Nullable PatientEntity loggedInPatient) {
         this();
         this.appointmentEntityControllerRemote = appointmentEntityControllerRemote;
         this.patientEntityControllerRemote = patientEntityControllerRemote;
         this.doctorEntityControllerRemote = doctorEntityControllerRemote;
         this.consultationEntityControllerRemote = consultationEntityControllerRemote;
         this.queueEntityControllerRemote = queueEntityControllerRemote;
-        sdf2 = new SimpleDateFormat("yyyy-MM-dd");
-        sdf3 = new SimpleDateFormat("HH:mm");
+        this.loggedInPatient = loggedInPatient;
+        
     }
     
     
@@ -65,13 +82,14 @@ public class RegistrationOperationModule {
         
         while(true) {
             System.out.println("*** CARS :: Registration Operation ***");
+            System.out.println("*Enter 0 at any point to terminate*");
             System.out.println();
             System.out.println("1: Register New Patient");
             System.out.println("2: Register Walk-In Consultation");
             System.out.println("3: Register Consultation By Appointment");
             System.out.println("4: Back");
             System.out.println();
-            Integer response = 0;
+            Integer response = -1;
             
             while (response < 1 || response > 4) {
                 System.out.print("> ");
@@ -84,8 +102,8 @@ public class RegistrationOperationModule {
                     registerWalkInConsultation();
                 } else if (response == 3) {
                     registerConsultationAppointment();
-                } else if (response == 4) {
-                    break;
+                } else if (response == 4 || response == 0) {
+                    return;
                 } else {
                     System.out.println("Invalid option, please try again!\n");
                 }
@@ -107,6 +125,9 @@ public class RegistrationOperationModule {
         while (true) {
             System.out.print("Enter Identity Number> ");
             String ic = sc.nextLine();
+            if(ic.equals("0")) {
+                return;
+            }
             //System.out.println("DEBUG LINE 1 : " + patientEntityControllerRemote.doesPatientExistByIc(ic));
             if(!patientEntityControllerRemote.doesPatientExistByIc(ic)) {
                 System.out.print("Enter Password> ");
@@ -150,41 +171,24 @@ public class RegistrationOperationModule {
 
     private void registerWalkInConsultation() throws ParseException {
         System.out.println("*** CARS :: Registration Operation :: Register Walk-In Consultation ***");
-        
+        // Actual date
+        //Date today = Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant());
         // Fake date : Monday, 2020-05-11 14:00 hrs
-        Date today = new SimpleDateFormat("yyyy-MM-dd HH:mm").parse("2020-05-14 11:00");
+        //Date today = new SimpleDateFormat("yyyy-MM-dd HH:mm").parse("2020-05-14 11:00");
+        //String todayString = sdf2.format(today);
+        //Date todayFormatted = sdf2.parse(todayString);
+        fetchToday();
         Calendar tempDow = Calendar.getInstance();
         Calendar tempRound = Calendar.getInstance();
         tempRound.setTime(today);
-        
-        //Date today = Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant());
-        //Calendar tempDow = Calendar.getInstance();
-        //Calendar tempRound = Calendar.getInstance();
-        
         String cTime = sdf3.format(tempRound.getTime());
         tempDow.setTime(today);
         int dayOfWeek = tempDow.get(Calendar.DAY_OF_WEEK);
         Time currentTime;
         Time lastSlot;
-        String todayString = sdf2.format(today);
-        Date todayFormatted = sdf2.parse(todayString);
         currentTime = new Time(sdf3.parse(cTime.trim()).getTime());
-        lastSlot = new Time(sdf3.parse("17:30").getTime());
-        if(dayOfWeek == 5 && currentTime.after(new Time (sdf3.parse("16:30".trim()).getTime())) ) {
-            lastSlot = new Time(sdf3.parse("16:30").getTime());
-            System.out.println(" Our last consultation slot for Thursdays is 16:30. The time now is " + currentTime + ". Please come again tomorrow.");
-            return;
-        } else if (dayOfWeek == 6 && currentTime.after(new Time(sdf3.parse("17:00".trim()).getTime()))) {
-            lastSlot = new Time(sdf3.parse("17:00").getTime());
-            System.out.println(" Our last consultation slot for Fridays is 17:00. The time now is " + currentTime + ". Please come again tomorrow.");
-            return;
-        } else if (dayOfWeek >= 2 && dayOfWeek <=4 && currentTime.after(new Time(sdf3.parse("17:30".trim()).getTime()))) {
-            System.out.println(" Our last consultation slot for Mondays - Wednesdays is 17:30. The time now is " + currentTime + ". Please come again tomorrow.");
-            return;
-        } else if(currentTime.before(new Time(sdf3.parse("08:30".trim()).getTime())) || currentTime.after(new Time(sdf3.parse("18:00".trim()).getTime()))){
-            System.out.println("Clinic has yet open, please come back at 08:30. Time now is " + currentTime);
-            return;
-        } else {
+        lastSlot = isClinicOpen();
+        if(lastSlot != null) {
             List<DoctorEntity> doctors = doctorEntityControllerRemote.retrieveAllDoctorEntities();
             System.out.println("Doctor: ");
             System.out.printf("%-10s%-20s", "Id ", "| Name");
@@ -264,17 +268,18 @@ public class RegistrationOperationModule {
                         }
                     }
                     doctorEntity = doctorEntityControllerRemote.retrieveDoctorEntityById(doctorId);
+                    boolean isDoctorFree = false;
                     for(int i = 0; i < doctors.size(); i++) {
                         if(doctors.get(i).equals(doctorEntity)) {
                             for(int j = 0; j < next6Slots.size(); j++) {
                                 if(doctorAvailability[j][i]) {
-                                    firstFreeSlot = next6Slots.get(j);
+                                    isDoctorFree = true;
                                     break;
                                 }
                             }
                         }
                     }
-                    if(firstFreeSlot != null ) {
+                    if(isDoctorFree == true ) {
                         break;
                     } else {
                         System.out.println("Doctor ID : " + doctorId + " has no available slot, please select another doctor");
@@ -288,58 +293,207 @@ public class RegistrationOperationModule {
             
             PatientEntity patientEntity;
             while(true) {
+                //System.out.println("DEBUG HERE " + loggedInPatient);
                 try {
-                    System.out.print("Enter Patient Identity Number> ");
-                    String ic = sc.nextLine();
-                    patientEntity = patientEntityControllerRemote.retrievePatientEntityByIc(ic);
+                    if(Objects.isNull(loggedInPatient) ) {
+                        System.out.print("Enter Patient Identity Number> ");
+                        String ic = sc.nextLine();
+                        if(ic.equals("0")) {
+                            return;
+                        }
+                        patientEntity = patientEntityControllerRemote.retrievePatientEntityByIc(ic);
+                    } else {
+                        //System.out.println("loggedPatient is not null" + Objects.isNull(loggedInPatient));
+                        patientEntity = loggedInPatient;
+                    }
+                    
+                    for(int i = 0; i < doctors.size(); i++) {
+                        if(doctors.get(i).equals(doctorEntity)) {
+                            for(int j = 0; j < next6Slots.size(); j++) {
+                                if(doctorAvailability[j][i] && patientEntityControllerRemote.patientAvailableAtTime(patientEntity, next6Slots.get(j), todayFormatted)) {
+                                    firstFreeSlot = next6Slots.get(j);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
+                    if(firstFreeSlot != null) {
+                        break;
+                    } else {
+                        System.out.println("Patient ID : " + patientEntity.getPatientId() + " already has a appointment/consultation for the day that clashes with all the available timings for doctor : " + doctorEntity.getFullName());
+                        System.out.println("Please try again!\n");
+                        registerWalkInConsultation();
+                        
+                    }
                     break;
                 } catch (PatientNotFoundException ex) {
                     System.out.println("Patient record not found, please try again!");
                 }
             }
             
-            
-            
-            int queueNum = 0;
-            if(!queueEntityControllerRemote.doesQueueEntityExist(todayFormatted)) {
-                //System.out.println("DAY QUEUE ENTITY DOES NOT EXISTS!");
-                QueueEntity newQueue = new QueueEntity(todayFormatted);
-                queueEntityControllerRemote.createQueueEntity(newQueue);
-            }
-            //System.out.println("DAY QUEUE ENTITY ALREADY EXISTS!");
-            QueueEntity queueEntity;
-            try {
-                //System.out.println("DEBUG LINE 1");
-                queueEntity = queueEntityControllerRemote.retrieveQueueEntityByDate(todayFormatted);
-                //System.out.println("DEBUG LINE 2");
-                queueNum = queueEntity.getCounterAndIncrement();
-                //System.out.println("DEBUG LINE 3");
-                queueEntityControllerRemote.updateQueueEntity(queueEntity);
-                //System.out.println("DEBUG LINE 4");
-            } catch (QueueNotFoundException ex) {
-                System.out.println("Error retrieving queue for day : " + todayString);
-            }
+            int queueNum = getCounter();
             
             try {
                 ConsultationEntity newConsultation = new ConsultationEntity(queueNum, patientEntity, doctorEntity, todayFormatted, firstFreeSlot);
                 consultationEntityControllerRemote.createConsultationEntity(newConsultation);
                 System.out.println(patientEntity.getFullName() + " appointment is confirmed with DR." + doctorEntity.getFullName() + " at " + sdf3.format(firstFreeSlot));
-                System.out.println("Queue Number: " + queueNum);
+                System.out.println("Queue Number: " + queueNum + ".\n");
             } catch (CreateConsultationException ex) { 
                 System.out.println("Error creating consultation");
             }
         }
         
-        
-        
-        
-        
-        
+    }
+    
+    private  int getCounter() {
+        int queueNum = 0;
+        if(!queueEntityControllerRemote.doesQueueEntityExist(todayFormatted)) {
+            QueueEntity newQueue = new QueueEntity(todayFormatted);
+            queueEntityControllerRemote.createQueueEntity(newQueue);
+        }
+        QueueEntity queueEntity;
+        try {
+            queueEntity = queueEntityControllerRemote.retrieveQueueEntityByDate(todayFormatted);
+            queueNum = queueEntity.getCounterAndIncrement();
+            queueEntityControllerRemote.updateQueueEntity(queueEntity);
+        } catch (QueueNotFoundException ex) {
+            System.out.println("Error retrieving queue for day : " + sdf2.format(todayFormatted));
+        }
+        return queueNum;
+    }
+    
+    private Date fetchToday() throws ParseException {
 
+        //today = Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant());
+        // Actual date
+        //today = Calendar.getInstance().getTime();
+        // Fake date : Monday, 2020-05-11 14:00 hrs
+        today = new SimpleDateFormat("yyyy-MM-dd HH:mm").parse("2020-05-14 11:00");
+        todayString = sdf2.format(today);
+        todayFormatted = sdf2.parse(todayString);
+        
+        return todayFormatted;
     }
 
-    private void registerConsultationAppointment() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    private Time isClinicOpen() throws ParseException {
+        Calendar tempDow = Calendar.getInstance();
+        Calendar tempRound = Calendar.getInstance();
+        tempRound.setTime(today);
+        String cTime = sdf3.format(tempRound.getTime());
+        tempDow.setTime(today);
+        int dayOfWeek = tempDow.get(Calendar.DAY_OF_WEEK);
+        Time currentTime;
+        Time lastSlot;
+        currentTime = new Time(sdf3.parse(cTime.trim()).getTime());
+        lastSlot = new Time(sdf3.parse("17:30").getTime());
+        if(dayOfWeek == 5) {
+            lastSlot = new Time(sdf3.parse("16:30").getTime());
+            if(currentTime.after(new Time (sdf3.parse("16:30".trim()).getTime())) ) { 
+                System.out.println(" Our last consultation slot for Thursdays is 16:30. The time now is " + currentTime + ". Please come again tomorrow.");
+                return null;
+            }
+        } else if (dayOfWeek == 6) {
+            lastSlot = new Time(sdf3.parse("17:00").getTime());
+            if(currentTime.after(new Time(sdf3.parse("17:00".trim()).getTime()))) {
+                System.out.println(" Our last consultation slot for Fridays is 17:00. The time now is " + currentTime + ". Please come again tomorrow.");
+                return null;
+            }
+        } else if (dayOfWeek >= 2 && dayOfWeek <= 4) {
+            lastSlot = new Time(sdf3.parse("17:30").getTime());
+            if(dayOfWeek <=4 && currentTime.after(new Time(sdf3.parse("17:30".trim()).getTime()))) {
+                System.out.println(" Our last consultation slot for Mondays - Wednesdays is 17:30. The time now is " + currentTime + ". Please come again tomorrow.");
+                return null;
+            }
+        } else if(currentTime.before(new Time(sdf3.parse("08:30".trim()).getTime())) || currentTime.after(new Time(sdf3.parse("18:00".trim()).getTime()))){
+            System.out.println("Clinic has yet open, please come back at 08:30. Time now is " + currentTime);
+            return null;
+        }
+        return lastSlot;
+    }
+    
+    private void registerConsultationAppointment() throws ParseException {
+        System.out.println("*** CARS :: Registration Operation :: Register Consultation By Appointment ***");
+        
+        Scanner sc = new Scanner(System.in);
+        fetchToday();
+        Calendar tempRound = Calendar.getInstance();
+        tempRound.setTime(today);
+        String cTime = sdf3.format(tempRound.getTime());
+        Time currentTime;
+        currentTime = new Time(sdf3.parse(cTime.trim()).getTime());
+        while(true) {
+            try {
+                PatientEntity patientEntity;
+                if(Objects.isNull(loggedInPatient)) {
+                    System.out.print("Enter Patient Identity Number (Enter 0 to return to Appointment Operations Menu)> ");
+                    String ic = sc.nextLine();
+                    if(ic.equals("0")) {
+                        return;
+                    }
+                   patientEntity = patientEntityControllerRemote.retrievePatientEntityByIc(ic);
+                } else {
+                    patientEntity = loggedInPatient;
+                }
+                List<AppointmentEntity> fetchAppointments = appointmentEntityControllerRemote.retrieveAppointmentsByPatient(patientEntity);
+                ArrayList<AppointmentEntity> patientAppointments = new ArrayList<>();
+                
+                for(AppointmentEntity appointmentEntity : fetchAppointments) {
+                    if(!appointmentEntity.getTime().before(currentTime)) {
+                        patientAppointments.add(appointmentEntity);
+                    }
+                }
+                
+                if(patientAppointments.size() == 0) {
+                    System.out.println("No appointment records found for patient : " + patientEntity.getIdentityNumber());
+                } else { 
+                    System.out.println("Appointments: ");
+                    System.out.printf("%-5s%-20s%-15s%-30s", "Id ", "| Date ", "| Time", "| Doctor");
+                    System.out.println();
+                    for(AppointmentEntity ae : patientAppointments) {
+                        System.out.printf("%-5s%-20s%-15s%-30s", ae.getAppointmentId(), "| " + new SimpleDateFormat("yyyy-MM-dd").format(ae.getDate()), "| " + new SimpleDateFormat("HH:mm").format(ae.getTime()), "| " + ae.getDoctorEntity().getFullName());
+                        System.out.println();
+                    }
+                    System.out.println();
+                }
+                
+                while(true) {
+                    try {
+                        System.out.print("Enter Appointment Id (Enter 0 to return to Appointment Operations Menu)> ");
+                        int appointmentId = sc.nextInt();
+                        if(appointmentId == 0) {
+                            return;
+                        }
+                        sc.nextLine();
+                        AppointmentEntity fetchAppointment = appointmentEntityControllerRemote.retrieveAppointmentById(appointmentId);
+                        if(patientAppointments.contains(fetchAppointment)) {
+                            try {
+                                int queueNum = getCounter();
+                                ConsultationEntity newConsultation = new ConsultationEntity(queueNum, fetchAppointment);
+                                consultationEntityControllerRemote.createConsultationEntity(newConsultation);
+                                System.out.println(patientEntity.getFullName() + " appointment is confirmed with DR." + newConsultation.getDoctorEntity().getFullName() + " at " + sdf3.format(fetchAppointment.getTime()));
+                                System.out.println("Queue Number: " + queueNum + ".");
+                                //appointmentEntityControllerRemote.deleteAppointmentEntityById(appointmentId);
+                                //System.out.println(patientEntity.getFullName() + " appointment with DR." + fetchAppointment.getDoctorEntity().getFullName() + " at " + sdf3.format(fetchAppointment.getTime()) + " on " + sdf2.format(fetchAppointment.getDate()) + " has been cancelled.");
+                            } catch (CreateConsultationException ex) {
+                                System.out.println("Error occured while creating consultation.");
+                            }
+                        }
+                    } catch (AppointmentNotFoundException ex) {
+                        System.out.println("Please input an valid Appointment ID and try again.");
+                    }
+                    break;
+                } 
+                break;
+            } catch (PatientNotFoundException ex) {
+                System.out.println("Patient record not found, please try again!)");
+            }
+           
+       }     
+        
+        
+        
+    
     }
     
 }

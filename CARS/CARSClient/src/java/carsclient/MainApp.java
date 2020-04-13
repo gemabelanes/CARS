@@ -13,6 +13,8 @@ import ejb.session.stateless.QueueEntityControllerRemote;
 import ejb.session.stateless.StaffEntityControllerRemote;
 import entity.StaffEntity;
 import java.text.ParseException;
+import java.util.Scanner;
+import util.exception.InvalidLoginException;
 
 /**
  *
@@ -51,7 +53,7 @@ public class MainApp {
         System.out.println("RUNNING REGISTRATION OPERATIONS MODULE TEST");
         //this.appointmentOperationsModule = new AppointmentOperationsModule(appointmentEntityControllerRemote, patientEntityControllerRemote, doctorEntityControllerRemote);
         //appointmentOperationsModule.appointmentMainMenu();
-        this.registrationOperationModule = new RegistrationOperationModule(appointmentEntityControllerRemote,patientEntityControllerRemote, doctorEntityControllerRemote, consultationEntityControllerRemote, queueEntityControllerRemote);
+        this.registrationOperationModule = new RegistrationOperationModule(appointmentEntityControllerRemote,patientEntityControllerRemote, doctorEntityControllerRemote, consultationEntityControllerRemote, queueEntityControllerRemote, null);
         registrationOperationModule.registrationMainMenu();
         System.out.println("TERMINATING PROGRAM");
     }
@@ -70,7 +72,7 @@ public class MainApp {
         
         if(username.length() > 0 && password.length() > 0)
         {
-            currentStaffEntity = staffEntitySessionBeanRemote.staffLogin(username, password);
+            currentStaffEntity = staffEntityControllerRemote.staffLogin(username, password);
         }
         else
         {
@@ -78,7 +80,7 @@ public class MainApp {
         }
     }
     
-    private void menuMain()
+    private void menuMain() throws ParseException
     {
         Scanner sc = new Scanner(System.in);
         Integer response = 0;
@@ -101,15 +103,17 @@ public class MainApp {
                 
                 if(response == 1)
                 {
-                    registrationModule.registrationMenuOperation();
+                    this.registrationOperationModule = new RegistrationOperationModule(appointmentEntityControllerRemote,patientEntityControllerRemote, doctorEntityControllerRemote, consultationEntityControllerRemote, queueEntityControllerRemote, null);
+                    registrationOperationModule.registrationMainMenu();
                 }
                 else if(response == 2)
                 {
-                    appointmentModule.appointmentMenuOperation();
+                    this.appointmentOperationsModule = new AppointmentOperationsModule(appointmentEntityControllerRemote, patientEntityControllerRemote, doctorEntityControllerRemote, null);
+                    appointmentOperationsModule.appointmentMainMenu();
                 }
                 else if(response == 3)
                 {
-                    administrationModule.adminstrationMenuOperation();
+                    //administrationModule.adminstrationMenuOperation();
                 }
                 else if(response == 4)
                 {

@@ -5,13 +5,19 @@
  */
 package ejb.session.stateless;
 
+import entity.AppointmentEntity;
+import entity.ConsultationEntity;
+import entity.DoctorEntity;
 import entity.PatientEntity;
+import java.sql.Time;
+import java.util.Date;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.NoResultException;
 import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import util.exception.InvalidLoginException;
 import util.exception.PatientNotFoundException;
 
 /**
@@ -70,6 +76,8 @@ public class PatientEntityController implements PatientEntityControllerRemote, P
             throw new PatientNotFoundException("Patient IC : " + patientIc + " does not exist!");
         }
     }
+    
+    
 
     @Override
     public boolean doesPatientExistByIc(String patientIc) {
@@ -80,6 +88,48 @@ public class PatientEntityController implements PatientEntityControllerRemote, P
             return false;
         }
         return true;
+    }
+
+    @Override
+    public boolean patientAvailableAtTime(PatientEntity patientEntity, Time time, Date date) {
+        PatientEntity fetchPatient = entityManager.find(PatientEntity.class, patientEntity.getPatientId());
+        
+        fetchPatient.getPatientAppointments();
+        fetchPatient.getPatientConsultations();
+        
+        List<ConsultationEntity> patientConsultations = fetchPatient.getPatientConsultations();
+        List<AppointmentEntity> patientAppointments = fetchPatient.getPatientAppointments();
+        
+        for(ConsultationEntity consultationEntity : patientConsultations) {
+            if(consultationEntity.getDate().equals(date) && consultationEntity.getTime().equals(time)) {
+                return false;
+            }
+        }
+
+        for(AppointmentEntity appointmentEntity : patientAppointments) {
+            if(appointmentEntity.getDate().equals(date) && appointmentEntity.getTime().equals(time)) {
+                return false;
+            }
+        }
+        return true;
+        
+        
+    }
+
+    @Override
+    public PatientEntity patientLogin(String username, String password) throws InvalidLoginException {
+        try {
+            PatientEntity patientEntity = retrievePatientEntityByIc(username);
+            
+            if(patientEntity.verifyPassword(password)) {
+                return patientEntity;
+            } else {
+                throw new InvalidLoginException("Username does not exist or invalid password!");
+            }
+            
+        } catch (PatientNotFoundException ex) {
+            throw new InvalidLoginException("Patient does not exist");
+        }
     }
     
     

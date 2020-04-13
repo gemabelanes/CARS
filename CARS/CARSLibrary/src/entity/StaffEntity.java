@@ -65,6 +65,17 @@ public class StaffEntity implements Serializable {
         
     }
     
+    public boolean verifyPassword(String password) {
+        String enteredPassword;
+        try {
+            enteredPassword = createHash(password);
+            return enteredPassword.equals(this.password);
+        } catch (NoSuchAlgorithmException ex) {
+            System.out.println("Error verifying password");
+        }
+        return false;
+    }
+    
     private String createHash(String password) throws NoSuchAlgorithmException {
         try { 
             MessageDigest md = MessageDigest.getInstance("MD5");

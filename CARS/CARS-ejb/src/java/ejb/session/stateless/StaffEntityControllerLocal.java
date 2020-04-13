@@ -8,6 +8,7 @@ package ejb.session.stateless;
 import entity.StaffEntity;
 import java.util.List;
 import javax.ejb.Local;
+import util.exception.InvalidLoginException;
 import util.exception.StaffNotFoundException;
 
 /**

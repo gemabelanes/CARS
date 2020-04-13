@@ -92,6 +92,17 @@ public class PatientEntity implements Serializable {
         this.fullName = firstName + " " + lastName;
     }
 
+    public boolean verifyPassword(String password) {
+        String enteredPassword;
+        try {
+            enteredPassword = createHash(password);
+            return enteredPassword.equals(this.password);
+        } catch (NoSuchAlgorithmException ex) {
+            System.out.println("Error verifying password");
+        }
+        return false;
+    }
+    
     public String getPassword() {
         return password;
     }
