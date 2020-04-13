@@ -14,6 +14,8 @@ import ejb.session.stateless.StaffEntityControllerRemote;
 import entity.StaffEntity;
 import java.text.ParseException;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import util.exception.InvalidLoginException;
 
 /**
@@ -51,13 +53,44 @@ public class MainApp {
     
     public void runApp() throws ParseException {
         System.out.println("STARTING UP...");
-        System.out.println("RUNNING REGISTRATION OPERATIONS MODULE TEST");
+        
+        Scanner sc = new Scanner(System.in);
+        
+        
+        while(true) {
+            System.out.println("*** Welcome to Clinic Appointment Registration System (CARS) ***\n");
+            System.out.println("1: Login");
+            System.out.println("2: Exit\n");
+            Integer response = 0;
+            while(response < 1 || response > 2) {
+                System.out.print("> ");
+                response = sc.nextInt();
+                if(response == 1) {
+                    try {
+                        doLogin();
+                        menuMain();
+                        break;
+                    } catch (InvalidLoginException ex) {
+                        System.out.println(ex);
+                    }
+                } else if(response == 2) {
+                    break;
+                } else {
+                    System.out.println("Invalid option. Please try again.");
+                }
+            }
+            if(response == 2) {
+                break;
+            }
+            sc.nextLine();
+        }
+        
         //this.appointmentOperationsModule = new AppointmentOperationsModule(appointmentEntityControllerRemote, patientEntityControllerRemote, doctorEntityControllerRemote);
         //appointmentOperationsModule.appointmentMainMenu();
         //this.registrationOperationModule = new RegistrationOperationModule(appointmentEntityControllerRemote,patientEntityControllerRemote, doctorEntityControllerRemote, consultationEntityControllerRemote, queueEntityControllerRemote, null);
         //registrationOperationModule.registrationMainMenu();
-        this.administrationOperationsModule = new AdministrationOperationsModule(staffEntityControllerRemote, patientEntityControllerRemote, doctorEntityControllerRemote, appointmentEntityControllerRemote, consultationEntityControllerRemote);
-        administrationOperationsModule.administrationMainMenu();
+        //this.administrationOperationsModule = new AdministrationOperationsModule(staffEntityControllerRemote, patientEntityControllerRemote, doctorEntityControllerRemote, appointmentEntityControllerRemote, consultationEntityControllerRemote);
+        //administrationOperationsModule.administrationMainMenu();
         System.out.println("TERMINATING PROGRAM");
     }
     
@@ -68,9 +101,9 @@ public class MainApp {
         String password = "";
         
         System.out.println("*** CARS :: Login ***\n");
-        System.out.println("Enter username> ");
+        System.out.print("Enter username> ");
         username = sc.nextLine().trim();
-        System.out.println("Enter password> ");
+        System.out.print("Enter password> ");
         password = sc.nextLine().trim();
         
         if(username.length() > 0 && password.length() > 0)
@@ -121,18 +154,14 @@ public class MainApp {
                 }
                 else if(response == 4)
                 {
-                    break;
+                    return;
                 }
                 else
                 {
                     System.out.println("Invalid option, please try again!\n");
                 }
             }
-            
-            if(response == 4)
-            {
-                break;
-            }
+            sc.nextLine();
         }
     }
     
