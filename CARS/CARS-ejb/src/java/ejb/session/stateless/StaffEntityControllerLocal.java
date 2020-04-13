@@ -22,6 +22,10 @@ public interface StaffEntityControllerLocal {
     List<StaffEntity> retrieveAllStaffEntity();
 
     StaffEntity retrieveStaffByStaffId(long staffId) throws StaffNotFoundException;
+    
+    StaffEntity retrieveStaffByUsername(String username) throws StaffNotFoundException;
+    
+    StaffEntity staffLogin(String username, String password) throws InvalidLoginException;
 
     void updateStaffEntity(StaffEntity staffEntity);
 
