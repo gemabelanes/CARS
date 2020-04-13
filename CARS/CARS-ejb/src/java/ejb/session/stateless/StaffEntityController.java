@@ -96,7 +96,8 @@ public class StaffEntityController implements StaffEntityControllerRemote, Staff
     }
 
     @Override
-    public void deleteStaffEntityById(StaffEntity staffId) {
+    public void deleteStaffEntityById(StaffEntity staffId) throws StaffNotFoundException
+    {
         StaffEntity staffEntity = entityManager.find(StaffEntity.class, staffId);
         entityManager.remove(staffEntity);
         entityManager.flush();
