@@ -50,7 +50,44 @@ public class StaffEntityController implements StaffEntityControllerRemote, Staff
         } else {
             return staffEntity;
         }
+    }
+    
+    @Override
+    public StaffEntity retrieveStaffByUsername(String username) throws StaffNotFoundException
+    {
+        Query query = entityManager.createQuery("SELECT s FROM StaffEntity s WHERE s.username = :inUsername");
+        query.setParameter("inUsername", username);
         
+        try
+        {
+            return (StaffEntity)query.getSingleResult();
+        }
+        catch(NoResultException | NonUniqueResultException ex)
+        {
+            throw new StaffNotFoundException("Staff Username " + username + " does not exist!");
+        }
+    }
+    
+    @Override
+    public StaffEntity staffLogin(String username, String password) throws InvalidLoginException
+    {
+        try
+        {
+            StaffEntity staffEntity = retrieveStaffByUsername(username);
+            
+            if(staffEntity.getPassword().equals(password))
+            {
+                return staffEntity;
+            }
+            else
+            {
+                throw new InvalidLoginException("Username does not exist or invalid password!");
+            }
+        }
+        catch(StaffNotFoundException ex)
+        {
+            throw new InvalidLoginException("Username does not exist or invalid password!");
+        }
     }
 
     @Override
@@ -63,7 +100,6 @@ public class StaffEntityController implements StaffEntityControllerRemote, Staff
         StaffEntity staffEntity = entityManager.find(StaffEntity.class, staffId);
         entityManager.remove(staffEntity);
         entityManager.flush();
-        
     }
     
     
