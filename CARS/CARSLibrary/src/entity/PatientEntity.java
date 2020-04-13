@@ -65,6 +65,7 @@ public class PatientEntity implements Serializable {
     private List<AppointmentEntity> patientAppointments;
 
     public PatientEntity() {
+        setPassword("password"); //default password
     }
 
     public String getFullName() {

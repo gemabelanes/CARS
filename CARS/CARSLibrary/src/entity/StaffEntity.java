@@ -135,7 +135,7 @@ public class StaffEntity implements Serializable {
         try {
             this.password = createHash(password);
         } catch (NoSuchAlgorithmException ex) {
-            Logger.getLogger(StaffEntity.class.getName()).log(Level.SEVERE, null, ex);
+            //Logger.getLogger(StaffEntity.class.getName()).log(Level.SEVERE, null, ex);
             System.out.println("Error setting password");
         }
     }

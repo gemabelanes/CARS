@@ -30,6 +30,6 @@ public interface StaffEntityControllerLocal {
 
     void updateStaffEntity(StaffEntity staffEntity);
 
-    void deleteStaffEntityById(StaffEntity staffId) throws StaffNotFoundException;
+    void deleteStaffEntityById(long staffId) throws StaffNotFoundException;
     
 }

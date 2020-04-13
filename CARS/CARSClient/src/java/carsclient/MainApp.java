@@ -32,6 +32,7 @@ public class MainApp {
   
     private AppointmentOperationsModule appointmentOperationsModule;
     private RegistrationOperationModule registrationOperationModule;
+    private AdministrationOperationsModule administrationOperationsModule;
     
     private StaffEntity currentStaffEntity;
     
@@ -53,8 +54,10 @@ public class MainApp {
         System.out.println("RUNNING REGISTRATION OPERATIONS MODULE TEST");
         //this.appointmentOperationsModule = new AppointmentOperationsModule(appointmentEntityControllerRemote, patientEntityControllerRemote, doctorEntityControllerRemote);
         //appointmentOperationsModule.appointmentMainMenu();
-        this.registrationOperationModule = new RegistrationOperationModule(appointmentEntityControllerRemote,patientEntityControllerRemote, doctorEntityControllerRemote, consultationEntityControllerRemote, queueEntityControllerRemote, null);
-        registrationOperationModule.registrationMainMenu();
+        //this.registrationOperationModule = new RegistrationOperationModule(appointmentEntityControllerRemote,patientEntityControllerRemote, doctorEntityControllerRemote, consultationEntityControllerRemote, queueEntityControllerRemote, null);
+        //registrationOperationModule.registrationMainMenu();
+        this.administrationOperationsModule = new AdministrationOperationsModule(staffEntityControllerRemote, patientEntityControllerRemote, doctorEntityControllerRemote, appointmentEntityControllerRemote, consultationEntityControllerRemote);
+        administrationOperationsModule.administrationMainMenu();
         System.out.println("TERMINATING PROGRAM");
     }
     
@@ -113,7 +116,8 @@ public class MainApp {
                 }
                 else if(response == 3)
                 {
-                    //administrationModule.adminstrationMenuOperation();
+                    this.administrationOperationsModule = new AdministrationOperationsModule(staffEntityControllerRemote, patientEntityControllerRemote, doctorEntityControllerRemote, appointmentEntityControllerRemote, consultationEntityControllerRemote);
+                    administrationOperationsModule.administrationMainMenu();
                 }
                 else if(response == 4)
                 {

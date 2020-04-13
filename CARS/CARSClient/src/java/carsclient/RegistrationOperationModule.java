@@ -321,12 +321,12 @@ public class RegistrationOperationModule {
                     if(firstFreeSlot != null) {
                         break;
                     } else {
-                        System.out.println("Patient ID : " + patientEntity.getPatientId() + " already has a appointment/consultation for the day that clashes with all the available timings for doctor : " + doctorEntity.getFullName());
+                        System.out.println("Patient IC : " + patientEntity.getIdentityNumber() + " already has a appointment/consultation for the day that clashes with all the available timings for doctor : " + doctorEntity.getFullName());
                         System.out.println("Please try again!\n");
                         registerWalkInConsultation();
                         
                     }
-                    break;
+                    //break;
                 } catch (PatientNotFoundException ex) {
                     System.out.println("Patient record not found, please try again!");
                 }
