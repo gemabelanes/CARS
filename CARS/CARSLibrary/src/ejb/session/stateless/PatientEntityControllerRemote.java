@@ -8,6 +8,7 @@ package ejb.session.stateless;
 import entity.PatientEntity;
 import java.util.List;
 import javax.ejb.Remote;
+import util.exception.InvalidLoginException;
 import util.exception.PatientNotFoundException;
 
 /**
@@ -31,5 +32,5 @@ public interface PatientEntityControllerRemote {
 
     boolean doesPatientExistByIc(String patientIc);
 
-    
+    PatientEntity patientLogin(String identityNumber, String password) throws InvalidLoginException;
 }
