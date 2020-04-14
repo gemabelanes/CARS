@@ -82,15 +82,26 @@ public class PatientEntityController implements PatientEntityControllerRemote, P
         return true;
     }
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+    @Override
+    public PatientEntity patientLogin(String identityNumber, String password) throws InvalidLoginException
+    {
+        try
+        {
+            PatientEntity patientEntity = retrievePatientEntityByIc(identityNumber);
+            
+            if(patientEntity.getPassword().equals(password))
+            {
+                return patientEntity;
+            }
+            else
+            {
+                throw new InvalidLoginException("Username does not exist or invalid password!");
+            }
+        }
+        catch(PatientNotFoundException ex)
+        {
+            throw new InvalidLoginException("Username does not exist or invalid password!");
+        }
+    }
     
 }
