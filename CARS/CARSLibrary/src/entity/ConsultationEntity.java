@@ -53,11 +53,14 @@ public class ConsultationEntity implements Serializable{
         this.time = time;
     }
     
-    //TODO
-    /*
     public ConsultationEntity(Integer queueNum, AppointmentEntity appointmentEntity) {
+        this.queueNum = queueNum;
+        this.patientEntity = appointmentEntity.getPatientEntity();
+        this.doctorEntity = appointmentEntity.getDoctorEntity();
+        this.date = appointmentEntity.getDate();
+        this.time = appointmentEntity.getTime();
     
-    }*/
+    }
 
     public Long getConsultationId() {
         return consultationId;

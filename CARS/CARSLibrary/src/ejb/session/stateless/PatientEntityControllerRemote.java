@@ -5,7 +5,10 @@
  */
 package ejb.session.stateless;
 
+import entity.DoctorEntity;
 import entity.PatientEntity;
+import java.sql.Date;
+import java.sql.Time;
 import java.util.List;
 import javax.ejb.Remote;
 import util.exception.InvalidLoginException;
@@ -33,4 +36,7 @@ public interface PatientEntityControllerRemote {
     boolean doesPatientExistByIc(String patientIc);
 
     PatientEntity patientLogin(String identityNumber, String password) throws InvalidLoginException;
+  
+    boolean patientAvailableAtTime(entity.PatientEntity patientEntity, Time time, java.util.Date date);
+
 }

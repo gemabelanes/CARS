@@ -65,6 +65,17 @@ public class StaffEntity implements Serializable {
         
     }
     
+    public boolean verifyPassword(String password) {
+        String enteredPassword;
+        try {
+            enteredPassword = createHash(password);
+            return enteredPassword.equals(this.password);
+        } catch (NoSuchAlgorithmException ex) {
+            System.out.println("Error verifying password");
+        }
+        return false;
+    }
+    
     private String createHash(String password) throws NoSuchAlgorithmException {
         try { 
             MessageDigest md = MessageDigest.getInstance("MD5");
@@ -124,7 +135,7 @@ public class StaffEntity implements Serializable {
         try {
             this.password = createHash(password);
         } catch (NoSuchAlgorithmException ex) {
-            Logger.getLogger(StaffEntity.class.getName()).log(Level.SEVERE, null, ex);
+            //Logger.getLogger(StaffEntity.class.getName()).log(Level.SEVERE, null, ex);
             System.out.println("Error setting password");
         }
     }

@@ -8,6 +8,7 @@ package ejb.session.stateless;
 import entity.StaffEntity;
 import java.util.List;
 import javax.ejb.Local;
+import util.exception.InvalidLoginException;
 import util.exception.StaffNotFoundException;
 
 /**
@@ -29,6 +30,6 @@ public interface StaffEntityControllerLocal {
 
     void updateStaffEntity(StaffEntity staffEntity);
 
-    void deleteStaffEntityById(StaffEntity staffId) throws StaffNotFoundException;
+    void deleteStaffEntityById(long staffId) throws StaffNotFoundException;
     
 }

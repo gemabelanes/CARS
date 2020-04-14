@@ -10,8 +10,11 @@ import java.util.List;
 import javax.ejb.Local;
 import javax.ejb.Remote;
 import javax.ejb.Stateless;
+import javax.persistence.NoResultException;
+import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import util.exception.InvalidLoginException;
 import util.exception.StaffNotFoundException;
 
 /**
@@ -75,7 +78,7 @@ public class StaffEntityController implements StaffEntityControllerRemote, Staff
         {
             StaffEntity staffEntity = retrieveStaffByUsername(username);
             
-            if(staffEntity.getPassword().equals(password))
+            if(staffEntity.verifyPassword(password))
             {
                 return staffEntity;
             }
@@ -96,7 +99,7 @@ public class StaffEntityController implements StaffEntityControllerRemote, Staff
     }
 
     @Override
-    public void deleteStaffEntityById(StaffEntity staffId) throws StaffNotFoundException
+    public void deleteStaffEntityById(long staffId) throws StaffNotFoundException
     {
         StaffEntity staffEntity = entityManager.find(StaffEntity.class, staffId);
         entityManager.remove(staffEntity);
