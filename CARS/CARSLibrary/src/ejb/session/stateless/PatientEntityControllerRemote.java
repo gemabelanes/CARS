@@ -35,9 +35,8 @@ public interface PatientEntityControllerRemote {
 
     boolean doesPatientExistByIc(String patientIc);
 
+    PatientEntity patientLogin(String identityNumber, String password) throws InvalidLoginException;
+  
     boolean patientAvailableAtTime(entity.PatientEntity patientEntity, Time time, java.util.Date date);
 
-    PatientEntity patientLogin(String username, String password) throws InvalidLoginException;
-
-    
 }
