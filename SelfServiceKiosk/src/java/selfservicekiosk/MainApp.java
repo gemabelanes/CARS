@@ -56,8 +56,8 @@ public class MainApp {
         while(true)
         {
             System.out.println("*** Welcome to Self-Service Kiosk ***\n");
-            System.out.println("1: Login");
-            System.out.println("2: Register");
+            System.out.println("1: Register");
+            System.out.println("2: Login");
             System.out.println("3: Exit\n");
             response = 0;
             
@@ -68,6 +68,11 @@ public class MainApp {
                 response = sc.nextInt();
                 
                 if(response == 1)
+                {
+                    doRegister();
+                    System.out.println("Registration is successful!");
+                }
+                else if(response ==2)
                 {
                     try
                     {
@@ -81,11 +86,6 @@ public class MainApp {
                     {
                         System.out.println("Invalid login credential: " + ex.getMessage() + "\n");
                     }
-                }
-                else if(response ==2)
-                {
-                    doRegister();
-                    System.out.println("Registration is successful!");
                 }
                 else if(response == 3)
                 {
@@ -101,28 +101,6 @@ public class MainApp {
             {
                 break;
             }
-        }
-    }
-    
-    private void doLogin() throws InvalidLoginException
-    {
-        Scanner sc = new Scanner(System.in);
-        String identityNumber = "";
-        String password = "";
-        
-        System.out.println("*** Self-Service Kiosk :: Login ***\n");
-        System.out.println("Enter Identity Number> ");
-        identityNumber = sc.nextLine().trim();
-        System.out.println("Enter password> ");
-        password = sc.nextLine().trim();
-        
-        if(identityNumber.length() > 0 && password.length() > 0)
-        {
-            currentPatientEntity = patientEntityControllerRemote.patientLogin(identityNumber, password);
-        }
-        else
-        {
-            throw new InvalidLoginException("Missing login credential!");
         }
     }
     
@@ -173,6 +151,28 @@ public class MainApp {
             } else {
                 System.out.println("Patient already exists! Please try again.");
             }
+        }
+    }
+    
+    private void doLogin() throws InvalidLoginException
+    {
+        Scanner sc = new Scanner(System.in);
+        String identityNumber = "";
+        String password = "";
+        
+        System.out.println("*** Self-Service Kiosk :: Login ***\n");
+        System.out.println("Enter Identity Number> ");
+        identityNumber = sc.nextLine().trim();
+        System.out.println("Enter password> ");
+        password = sc.nextLine().trim();
+        
+        if(identityNumber.length() > 0 && password.length() > 0)
+        {
+            currentPatientEntity = patientEntityControllerRemote.patientLogin(identityNumber, password);
+        }
+        else
+        {
+            throw new InvalidLoginException("Missing login credential!");
         }
     }
     
