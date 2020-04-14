@@ -1,16 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package selfservicekiosk;
+package amsclient;
 
 import ejb.session.stateless.AppointmentEntityControllerRemote;
-import ejb.session.stateless.ConsultationEntityControllerRemote;
 import ejb.session.stateless.DoctorEntityControllerRemote;
 import ejb.session.stateless.PatientEntityControllerRemote;
-import ejb.session.stateless.QueueEntityControllerRemote;
-import ejb.session.stateless.StaffEntityControllerRemote;
 import entity.PatientEntity;
 import java.text.ParseException;
 import java.util.Scanner;
@@ -22,14 +14,10 @@ import util.exception.PatientNotFoundException;
  * @author nicolechong
  */
 public class MainApp {
-    private StaffEntityControllerRemote staffEntityControllerRemote;
     private PatientEntityControllerRemote patientEntityControllerRemote;
     private DoctorEntityControllerRemote doctorEntityControllerRemote;
     private AppointmentEntityControllerRemote appointmentEntityControllerRemote;
-    private ConsultationEntityControllerRemote consultationEntityControllerRemote;
-    private QueueEntityControllerRemote queueEntityControllerRemote;
     
-    private RegistrationOperationModule registrationOperationModule;
     private AppointmentOperationsModule appointmentOperationsModule;
     
     private PatientEntity currentPatientEntity;
@@ -38,14 +26,11 @@ public class MainApp {
     {
     }
     
-    public MainApp(QueueEntityControllerRemote queueEntityControllerRemote, AppointmentEntityControllerRemote appointmentEntityControllerRemote, StaffEntityControllerRemote staffEntityControllerRemote, PatientEntityControllerRemote patientEntityControllerRemote, DoctorEntityControllerRemote doctorEntityControllerRemote, ConsultationEntityControllerRemote consultationEntityControllerRemote)
+    public MainApp(AppointmentEntityControllerRemote appointmentEntityControllerRemote, PatientEntityControllerRemote patientEntityControllerRemote, DoctorEntityControllerRemote doctorEntityControllerRemote)
     {
-        this.queueEntityControllerRemote = queueEntityControllerRemote;
         this.appointmentEntityControllerRemote = appointmentEntityControllerRemote;
-        this.staffEntityControllerRemote = staffEntityControllerRemote;
         this.patientEntityControllerRemote = patientEntityControllerRemote;
         this.doctorEntityControllerRemote = doctorEntityControllerRemote;
-        this.consultationEntityControllerRemote = consultationEntityControllerRemote;
     }
     
     public void runApp() throws ParseException
@@ -55,7 +40,7 @@ public class MainApp {
         
         while(true)
         {
-            System.out.println("*** Welcome to Self-Service Kiosk ***\n");
+            System.out.println("*** Welcome to AMS Client ***\n");
             System.out.println("1: Register");
             System.out.println("2: Login");
             System.out.println("3: Exit\n");
@@ -78,7 +63,6 @@ public class MainApp {
                     {
                         doLogin();
                         System.out.println("Login successful!\n");
-                        this.registrationOperationModule = new RegistrationOperationModule(appointmentEntityControllerRemote,patientEntityControllerRemote, doctorEntityControllerRemote, consultationEntityControllerRemote, queueEntityControllerRemote, currentPatientEntity);
                         this.appointmentOperationsModule = new AppointmentOperationsModule(appointmentEntityControllerRemote, patientEntityControllerRemote, doctorEntityControllerRemote, currentPatientEntity);
                         menuMain();
                     }
@@ -107,7 +91,7 @@ public class MainApp {
     private void doRegister() 
     {
         Scanner sc = new Scanner(System.in);
-        System.out.println("*** Self-Service Kiosk :: Register ***\n");
+        System.out.println("*** AMS Client :: Register ***\n");
         
         
         while (true) 
@@ -160,7 +144,7 @@ public class MainApp {
         String identityNumber = "";
         String password = "";
         
-        System.out.println("*** Self-Service Kiosk :: Login ***\n");
+        System.out.println("*** AMS Client :: Login ***\n");
         System.out.println("Enter Identity Number> ");
         identityNumber = sc.nextLine().trim();
         System.out.println("Enter password> ");
@@ -183,17 +167,15 @@ public class MainApp {
         
         while(true)
         {
-            System.out.println("*** Self-Service Kiosk :: Main ***\n");
+            System.out.println("*** AMS Client :: Main ***\n");
             System.out.println("You are login as " + currentPatientEntity.getFirstName() + " " + currentPatientEntity.getLastName() + "\n");
-            System.out.println("1: Register Walk-In Consultation");
-            System.out.println("2: Register Consultation By Appointment");
-            System.out.println("3: View Appointments");
-            System.out.println("4: Add Appointment");
-            System.out.println("5: Cancel Appointment");
-            System.out.println("6: Logout\n");
+            System.out.println("1: View Appointments");
+            System.out.println("2: Add Appointment");
+            System.out.println("3: Cancel Appointment");
+            System.out.println("4: Logout\n");
             response = 0;
             
-            while (response < 1 || response > 6)
+            while (response < 1 || response > 4)
             {
                 System.out.print("> ");
                 
@@ -201,25 +183,17 @@ public class MainApp {
                 
                 if(response == 1)
                 {
-                    registrationOperationModule.registerWalkInConsultation();
+                    appointmentOperationsModule.viewPatientAppointments();
                 }
                 else if(response == 2)
                 {
-                    registrationOperationModule.registerConsultationAppointment();
+                    appointmentOperationsModule.addAppointment();
                 }
                 else if(response == 3)
                 {
-                    appointmentOperationsModule.viewPatientAppointments();
-                }
-                else if(response == 4)
-                {
-                    appointmentOperationsModule.addAppointment();
-                }
-                else if(response == 5)
-                {
                     appointmentOperationsModule.cancelAppointment();
                 }
-                else if(response == 6)
+                else if(response == 4)
                 {
                     break;
                 }
@@ -229,7 +203,7 @@ public class MainApp {
                 }
             }
             
-            if(response == 6)
+            if(response == 4)
             {
                 break;
             }
