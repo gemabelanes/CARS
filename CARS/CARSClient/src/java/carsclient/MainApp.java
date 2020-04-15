@@ -52,7 +52,7 @@ public class MainApp {
     }
     
     public void runApp() throws ParseException {
-        System.out.println("STARTING UP...");
+        System.out.println("STARTING UP...\n");
         
         Scanner sc = new Scanner(System.in);
         
@@ -91,7 +91,7 @@ public class MainApp {
         //registrationOperationModule.registrationMainMenu();
         //this.administrationOperationsModule = new AdministrationOperationsModule(staffEntityControllerRemote, patientEntityControllerRemote, doctorEntityControllerRemote, appointmentEntityControllerRemote, consultationEntityControllerRemote);
         //administrationOperationsModule.administrationMainMenu();
-        System.out.println("TERMINATING PROGRAM");
+        System.out.println("TERMINATING PROGRAM\n");
     }
     
     private void doLogin() throws InvalidLoginException

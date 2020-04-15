@@ -1,4 +1,4 @@
-package ejb.session.singleton;
+package ejb.singleton;
 
 import ejb.session.stateless.StaffEntityControllerLocal;
 import ejb.session.stateless.PatientEntityControllerLocal;
@@ -12,6 +12,7 @@ import javax.ejb.Singleton;
 import javax.ejb.LocalBean;
 import javax.ejb.Startup;
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 
 @Singleton
@@ -50,8 +51,8 @@ public class DataInitializationSessionBean
         staffEntityControllerLocal.createNewStaffEntity(new StaffEntity("Eric", "Some", "manager", "password"));
         staffEntityControllerLocal.createNewStaffEntity(new StaffEntity("Victoria", "Newton", "nurse", "password"));
 
-        patientEntityControllerLocal.createNewPatient(new PatientEntity("S9867027A", "Sarah", "Yi", "F", 22, "93718799", "13, Clementi Road", "DY3ihrBrkt QyJIz6uMD sqA"));
-        patientEntityControllerLocal.createNewPatient(new PatientEntity("G1314207T", "Rajesh", "Singh", "M", 36, "93506839", "15, Mountbatten Road", "Qa0Xm0UFdx3HZ6Xs7tyKKQ"));
+        patientEntityControllerLocal.createNewPatient(new PatientEntity("S9867027A", "Sarah", "Yi", "F", 22, "93718799", "13, Clementi Road", "password"));
+        patientEntityControllerLocal.createNewPatient(new PatientEntity("G1314207T", "Rajesh", "Singh", "M", 36, "93506839", "15, Mountbatten Road", "password"));
 
         doctorEntityControllerLocal.createNewDoctor(new DoctorEntity("Tan", "Ming", "S10011", "BMBS"));
         doctorEntityControllerLocal.createNewDoctor(new DoctorEntity("Clair", "Han", "S41221", "MBBCh"));

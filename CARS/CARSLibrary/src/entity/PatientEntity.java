@@ -9,6 +9,8 @@ import java.io.Serializable;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.util.Base64;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -21,6 +23,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.Transient;
+import javax.xml.bind.annotation.XmlTransient;
 import util.exception.PatientAddAppointmentException;
 import util.exception.PatientAddConsultationException;
 import util.exception.PatientRemoveAppointmentException;
@@ -56,7 +59,7 @@ public class PatientEntity implements Serializable {
     private String password;
     @Transient
     private String fullName;
-    
+    private String salt;
     
     @OneToMany(mappedBy = "patientEntity", fetch = FetchType.EAGER)
     private List<ConsultationEntity> patientConsultations;
@@ -65,7 +68,12 @@ public class PatientEntity implements Serializable {
     private List<AppointmentEntity> patientAppointments;
 
     public PatientEntity() {
-        setPassword("password"); //default password
+        
+        SecureRandom random = new SecureRandom();
+        byte bytes[] = new byte[16];
+        random.nextBytes(bytes);
+        salt = Base64.getEncoder().encodeToString(bytes);
+        setPassword("123456"); //default password
     }
 
     public String getFullName() {
@@ -77,6 +85,7 @@ public class PatientEntity implements Serializable {
     }
 
     public PatientEntity(String identityNumber, String firstName, String lastName, String gender, Integer age, String phoneNumber, String address, String password) {
+        this();
         this.identityNumber = identityNumber;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -85,10 +94,10 @@ public class PatientEntity implements Serializable {
         this.phoneNumber = phoneNumber;
         this.address = address;
         try {
-            this.password = createHash(password);
+            this.password = createHash(salt + password);
         } catch (NoSuchAlgorithmException ex) {
             Logger.getLogger(StaffEntity.class.getName()).log(Level.SEVERE, null, ex);
-            System.out.println("Error creating Staff");
+            System.out.println("Error creating Patient");
         }
         this.fullName = firstName + " " + lastName;
     }
@@ -96,7 +105,7 @@ public class PatientEntity implements Serializable {
     public boolean verifyPassword(String password) {
         String enteredPassword;
         try {
-            enteredPassword = createHash(password);
+            enteredPassword = createHash(salt + password);
             return enteredPassword.equals(this.password);
         } catch (NoSuchAlgorithmException ex) {
             System.out.println("Error verifying password");
@@ -110,7 +119,7 @@ public class PatientEntity implements Serializable {
 
     public void setPassword(String password) {
         try {
-            this.password = createHash(password);
+            this.password = createHash(salt + password);
         } catch (NoSuchAlgorithmException ex) {
             Logger.getLogger(StaffEntity.class.getName()).log(Level.SEVERE, null, ex);
             System.out.println("Error setting password");
@@ -225,6 +234,7 @@ public class PatientEntity implements Serializable {
     }
     
     public void addAppointment(AppointmentEntity appointmentEntity) throws PatientAddAppointmentException {
+        
         if(appointmentEntity != null && !patientAppointments.contains(appointmentEntity)) {
             patientAppointments.add(appointmentEntity);
         } else {

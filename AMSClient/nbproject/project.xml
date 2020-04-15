@@ -2,6 +2,11 @@
 <project xmlns="http://www.netbeans.org/ns/project/1">
     <type>org.netbeans.modules.j2ee.clientproject</type>
     <configuration>
+        <buildExtensions xmlns="http://www.netbeans.org/ns/ant-build-extender/1">
+            <extension file="jaxws-build.xml" id="jaxws">
+                <dependency dependsOn="wsimport-client-generate" target="-pre-pre-compile"/>
+            </extension>
+        </buildExtensions>
         <data xmlns="http://www.netbeans.org/ns/car-project/1">
             <name>AMSClient</name>
             <minimum-ant-version>1.6.5</minimum-ant-version>
@@ -12,7 +17,10 @@
             <test-roots>
                 <root id="test.src.dir"/>
             </test-roots>
-            <included-library dirs="200">libs.javaee-api-7.0.classpath</included-library>
+            <included-library dirs="200">file.reference.javaee-api-7.0.jar</included-library>
+            <included-library dirs="200">file.reference.javax.persistence-2.1.0.jar</included-library>
+            <included-library dirs="200">file.reference.mysql-connector-java-8.0.18.jar</included-library>
+            <included-library dirs="200">file.reference.validation-api-2.0.1.Final.jar</included-library>
             <included-library dirs="200">reference.CARSLibrary.jar</included-library>
         </data>
         <references xmlns="http://www.netbeans.org/ns/ant-project-references/1">

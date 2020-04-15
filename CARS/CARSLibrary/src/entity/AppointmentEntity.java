@@ -5,6 +5,8 @@
  */
 package entity;
 
+import cars.xmladapters.DateAdapter;
+import cars.xmladapters.SQLTimeAdapter;
 import java.io.Serializable;
 import java.sql.Time;
 import java.util.Date;
@@ -16,6 +18,9 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
  *
@@ -29,9 +34,9 @@ public class AppointmentEntity implements Serializable {
     private Long appointmentId;
     @Column(nullable=false)
     @Temporal(TemporalType.TIMESTAMP)
-    private Date date;
+    private Date appointmentDate;
     @Column(nullable=false)
-    private Time time;
+    private String appointmentTime;
     
     @ManyToOne
     private PatientEntity patientEntity;
@@ -41,9 +46,9 @@ public class AppointmentEntity implements Serializable {
     public AppointmentEntity() {
     }
 
-    public AppointmentEntity(Date date, Time time, PatientEntity patientEntity, DoctorEntity doctorEntity) {
-        this.date = date;
-        this.time = time;
+    public AppointmentEntity(Date date, String time, PatientEntity patientEntity, DoctorEntity doctorEntity) {
+        this.appointmentDate = date;
+        this.appointmentTime = time;
         this.patientEntity = patientEntity;
         this.doctorEntity = doctorEntity;
     }
@@ -57,21 +62,22 @@ public class AppointmentEntity implements Serializable {
     }
 
     public Date getDate() {
-        return date;
+        return appointmentDate;
     }
 
     public void setDate(Date date) {
-        this.date = date;
+        this.appointmentDate = date;
+    }
+    
+    public String getTime() {
+        return appointmentTime;
+    }
+    
+    public void setTime(String time) {
+        this.appointmentTime = time;
     }
 
-    public Time getTime() {
-        return time;
-    }
-
-    public void setTime(Time time) {
-        this.time = time;
-    }
-
+    @XmlTransient
     public PatientEntity getPatientEntity() {
         return patientEntity;
     }
@@ -80,6 +86,7 @@ public class AppointmentEntity implements Serializable {
         this.patientEntity = patientEntity;
     }
 
+    @XmlTransient
     public DoctorEntity getDoctorEntity() {
         return doctorEntity;
     }

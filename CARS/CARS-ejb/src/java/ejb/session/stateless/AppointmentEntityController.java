@@ -20,6 +20,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import util.exception.AppointmentNotFoundException;
 import util.exception.CreateAppointmentException;
+import util.exception.DeleteAppointmentExceptionWs;
 import util.exception.DoctorAddAppointmentException;
 import util.exception.DoctorRemoveAppointmentException;
 import util.exception.PatientAddAppointmentException;
@@ -43,10 +44,12 @@ public class AppointmentEntityController implements AppointmentEntityControllerR
     public long createAppointmentEntity(AppointmentEntity appointmentEntity) throws CreateAppointmentException {
         try {
             DoctorEntity doctorEntity = appointmentEntity.getDoctorEntity();
+            System.out.println("DOCTOR FOUND : " + doctorEntity.getDoctorId());
             PatientEntity patientEntity = appointmentEntity.getPatientEntity();
-            doctorEntity.addAppointment(appointmentEntity);
-            patientEntity.addAppointment(appointmentEntity);
+            System.out.println("PATIENT FOUND : " + patientEntity.getIdentityNumber());
             entityManager.persist(appointmentEntity);
+            doctorEntity.addAppointment(appointmentEntity);
+            patientEntity.addAppointment(appointmentEntity);  
             entityManager.merge(patientEntity);
             entityManager.merge(doctorEntity);
             entityManager.flush();
@@ -80,6 +83,23 @@ public class AppointmentEntityController implements AppointmentEntityControllerR
         entityManager.flush();
     }
 
+    @Override
+    public void deleteAppointmentEntityByIdWs(long appointmentId, long doctorId, long patientId) throws DoctorRemoveAppointmentException, PatientRemoveAppointmentException, DeleteAppointmentExceptionWs {
+        AppointmentEntity appointmentEntity = entityManager.find(AppointmentEntity.class,appointmentId);
+        DoctorEntity doctorEntity = entityManager.find(DoctorEntity.class, doctorId);
+        PatientEntity patientEntity = entityManager.find(PatientEntity.class, patientId);
+        if(appointmentEntity.getDoctorEntity().equals(doctorEntity) && appointmentEntity.getPatientEntity().equals(patientEntity)) {
+            doctorEntity.removeAppointment(appointmentEntity);
+            patientEntity.removeAppointment(appointmentEntity);
+            entityManager.merge(doctorEntity);
+            entityManager.merge(patientEntity);
+            entityManager.remove(appointmentEntity);
+            entityManager.flush();
+        } else {
+            throw new DeleteAppointmentExceptionWs("Unable to delete appointment");
+        }
+    }
+    
     @Override
     public List<AppointmentEntity> retrieveAllAppointments() {
         Query query = entityManager.createQuery("SELECT a FROM AppointmentEntity a ORDER BY a.appointmentId");
@@ -125,6 +145,36 @@ public class AppointmentEntityController implements AppointmentEntityControllerR
         //entityManager.merge(patientEntity);
         //patientEntity.getPatientAppointments().size();
         return fetchPatient.getPatientAppointments();
+    }
+
+    @Override
+    public long createAppointmentEntityWs(long appointmentId, long doctorId, long patientId) throws CreateAppointmentException {
+        try {
+            
+            AppointmentEntity appointmentEntity = retrieveAppointmentById(appointmentId);
+            DoctorEntity doctorEntity = appointmentEntity.getDoctorEntity();
+            PatientEntity patientEntity = appointmentEntity.getPatientEntity();
+            if(doctorEntity.getDoctorId() == doctorId && patientEntity.getPatientId() == patientId) {
+                doctorEntity.addAppointment(appointmentEntity);
+                patientEntity.addAppointment(appointmentEntity);
+                entityManager.persist(appointmentEntity);
+                entityManager.merge(patientEntity);
+                entityManager.merge(doctorEntity);
+                entityManager.flush();
+                return appointmentEntity.getAppointmentId();
+            } else {
+                throw new CreateAppointmentException("Unable to create appointment");
+            }
+        } catch (DoctorAddAppointmentException | PatientAddAppointmentException | AppointmentNotFoundException ex) {
+            throw new CreateAppointmentException("Unable to create appointment");
+        }
+    }
+
+    @Override
+    public DoctorEntity fetchAppointmentsDoctor(long appointmentId) throws AppointmentNotFoundException {
+        AppointmentEntity appointmentEntity = retrieveAppointmentById(appointmentId);
+        return appointmentEntity.getDoctorEntity();
+        
     }
 
 

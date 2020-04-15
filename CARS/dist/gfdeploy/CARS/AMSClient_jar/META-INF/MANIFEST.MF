@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Ant-Version: Apache Ant 1.10.4
+Created-By: 1.8.0_241-b07 (Oracle Corporation)
+X-COMMENT: Main-Class will be added automatically by build
+Main-Class: amsclient.Main
+Class-Path: CARSLibrary.jar lib/CARSLibrary.jar javaee-api-7.0.jar lib
+ /javaee-api-7.0.jar javax.persistence-2.1.0.jar lib/javax.persistence
+ -2.1.0.jar mysql-connector-java-8.0.18.jar lib/mysql-connector-java-8
+ .0.18.jar validation-api-2.0.1.Final.jar lib/validation-api-2.0.1.Fin
+ al.jar 
+

@@ -114,17 +114,18 @@ public class AppointmentOperationsModule {
                     }
                     patientEntity = patientEntityControllerRemote.retrievePatientEntityByIc(ic);
                 } else {
-                    patientEntity = loggedInPatient;
+                    patientEntity = patientEntityControllerRemote.retrievePatientEntityByIc(loggedInPatient.getIdentityNumber());
                 }
                 List<AppointmentEntity> patientAppointments = appointmentEntityControllerRemote.retrieveAppointmentsByPatient(patientEntity);
                 
                 if(patientAppointments.size() == 0) {
                     System.out.println("No appointment records found for patient : " + patientEntity.getIdentityNumber());
+                    return;
                 } else { 
                     System.out.printf("%-5s%-20s%-15s%-30s", "Id ", "| Date ", "| Time", "| Doctor");
                     System.out.println();
                     for(AppointmentEntity ae : patientAppointments) {
-                        System.out.printf("%-5s%-20s%-15s%-30s", ae.getAppointmentId(), "| " + new SimpleDateFormat("yyyy-MM-dd").format(ae.getDate()), "| " + new SimpleDateFormat("HH:mm").format(ae.getTime()), "| " + ae.getDoctorEntity().getFullName());
+                        System.out.printf("%-5s%-20s%-15s%-30s", ae.getAppointmentId(), "| " + sdf2.format(ae.getDate()), "| " + ae.getTime(), "| " + ae.getDoctorEntity().getFullName());
                         System.out.println();
                     }
                 }
@@ -286,13 +287,13 @@ public class AppointmentOperationsModule {
                         try {
                             PatientEntity patientEntity = patientEntityControllerRemote.retrievePatientEntityByIc(patientIc);
                             if(patientEntityControllerRemote.patientAvailableAtTime(patientEntity, selectedTime, selectedDate)) {
-                                AppointmentEntity newAppointment = new AppointmentEntity(selectedDate, selectedTime, patientEntity, doctorEntity);
+                                AppointmentEntity newAppointment = new AppointmentEntity(selectedDate, sdf3.format(selectedTime), patientEntity, doctorEntity);
                                 long createNewAppointment = appointmentEntityControllerRemote.createAppointmentEntity(newAppointment);
                                 System.out.println(patientEntity.getFullName() + " appointment with DR." + doctorEntity.getFullName() + " at " + sdf3.format(selectedTime) + " on " + sdf2.format(selectedDate) + " has been added.\n");
                                 break;
                             } else {
                                 System.out.println("Patient already has an existing appointment at " + sdf3.format(selectedTime) + ". Please try again.");
-                                addAppointment();
+                                break;
                                 
                             }
                         } catch (PatientNotFoundException ex) {
@@ -333,12 +334,13 @@ public class AppointmentOperationsModule {
                 
                 if(patientAppointments.size() == 0) {
                     System.out.println("No appointment records found for patient : " + patientEntity.getIdentityNumber());
+                    return;
                 } else { 
                     System.out.println("Appointments: ");
                     System.out.printf("%-5s%-20s%-15s%-30s", "Id ", "| Date ", "| Time", "| Doctor");
                     System.out.println();
                     for(AppointmentEntity ae : patientAppointments) {
-                        System.out.printf("%-5s%-20s%-15s%-30s", ae.getAppointmentId(), "| " + new SimpleDateFormat("yyyy-MM-dd").format(ae.getDate()), "| " + new SimpleDateFormat("HH:mm").format(ae.getTime()), "| " + ae.getDoctorEntity().getFullName());
+                        System.out.printf("%-5s%-20s%-15s%-30s", ae.getAppointmentId(), "| " + sdf2.format(ae.getDate()), "| " + ae.getTime(), "| " + ae.getDoctorEntity().getFullName());
                         System.out.println();
                     }
                     System.out.println();
@@ -356,7 +358,7 @@ public class AppointmentOperationsModule {
                         if(patientAppointments.contains(fetchAppointment)) {
                             try {
                                 appointmentEntityControllerRemote.deleteAppointmentEntityById(appointmentId);
-                                System.out.println(patientEntity.getFullName() + " appointment with DR." + fetchAppointment.getDoctorEntity().getFullName() + " at " + sdf3.format(fetchAppointment.getTime()) + " on " + sdf2.format(fetchAppointment.getDate()) + " has been cancelled.");
+                                System.out.println(patientEntity.getFullName() + " appointment with DR." + fetchAppointment.getDoctorEntity().getFullName() + " at " + fetchAppointment.getTime() + " on " + sdf2.format(fetchAppointment.getDate()) + " has been cancelled.");
                             } catch (DoctorRemoveAppointmentException | PatientRemoveAppointmentException ex) {
                                 System.out.println("Error occured while deleting appointment record.");
                             }

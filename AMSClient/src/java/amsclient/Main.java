@@ -10,6 +10,10 @@ import ejb.session.stateless.DoctorEntityControllerRemote;
 import ejb.session.stateless.PatientEntityControllerRemote;
 import java.text.ParseException;
 import javax.ejb.EJB;
+import util.exception.PatientNotFoundException;
+import ws.client.AppointmentNotFoundException_Exception;
+import ws.client.ParseException_Exception;
+import ws.client.PatientNotFoundException_Exception;
 
 /**
  *
@@ -26,8 +30,8 @@ public class Main {
     private static AppointmentEntityControllerRemote appointmentEntityControllerRemote;
     
     
-    public static void main(String[] args) throws ParseException {
-        MainApp mainApp = new MainApp(appointmentEntityControllerRemote, patientEntityControllerRemote, doctorEntityControllerRemote);
+    public static void main(String[] args) throws AppointmentNotFoundException_Exception, ParseException, PatientNotFoundException, ParseException_Exception, PatientNotFoundException_Exception {
+        MainApp2 mainApp = new MainApp2();
         mainApp.runApp();
     }
     

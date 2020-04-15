@@ -331,6 +331,7 @@ public class RegistrationOperationModule
 
             if(patientAppointments.size() == 0) {
                 System.out.println("No appointment records found for patient : " + patientEntity.getIdentityNumber());
+                return;
             } else { 
                 System.out.println("Appointments: ");
                 System.out.printf("%-5s%-20s%-15s%-30s", "Id ", "| Date ", "| Time", "| Doctor");

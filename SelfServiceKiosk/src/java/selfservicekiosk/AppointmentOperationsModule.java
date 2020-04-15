@@ -100,8 +100,6 @@ public class AppointmentOperationsModule {
        Scanner sc = new Scanner(System.in);
        System.out.println("*** Self-Service Kiosk :: View Appointments ***\n");
             
-       while(true) 
-       {
            PatientEntity patientEntity = loggedInPatient;
            
            List<AppointmentEntity> patientAppointments = appointmentEntityControllerRemote.retrieveAppointmentsByPatient(patientEntity);
@@ -119,10 +117,8 @@ public class AppointmentOperationsModule {
                    System.out.printf("%-5s%-20s%-15s%-30s", ae.getAppointmentId(), "| " + new SimpleDateFormat("yyyy-MM-dd").format(ae.getDate()), "| " + new SimpleDateFormat("HH:mm").format(ae.getTime()), "| " + ae.getDoctorEntity().getFullName());
                    System.out.println();
                }
-           }
-                
+           }   
            System.out.println();
-       }
     }
 
     void addAppointment() {

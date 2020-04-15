@@ -171,6 +171,7 @@ public class DoctorEntity implements Serializable {
     }
     
     public void addAppointment(AppointmentEntity appointmentEntity) throws DoctorAddAppointmentException {
+        //doctorAppointments.add(appointmentEntity);
         if(appointmentEntity != null && !doctorAppointments.contains(appointmentEntity)) {
             doctorAppointments.add(appointmentEntity);
         } else {

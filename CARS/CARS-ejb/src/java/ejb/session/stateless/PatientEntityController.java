@@ -10,6 +10,7 @@ import entity.ConsultationEntity;
 import entity.DoctorEntity;
 import entity.PatientEntity;
 import java.sql.Time;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import javax.ejb.Stateless;
@@ -30,6 +31,9 @@ public class PatientEntityController implements PatientEntityControllerRemote, P
 
     @PersistenceContext(unitName = "CARSLibraryPU")
     private javax.persistence.EntityManager entityManager;
+    SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
+    SimpleDateFormat sdf3 = new SimpleDateFormat("H:mm");
+    
 
     public PatientEntityController() {
     }
@@ -102,35 +106,19 @@ public class PatientEntityController implements PatientEntityControllerRemote, P
         List<AppointmentEntity> patientAppointments = fetchPatient.getPatientAppointments();
         
         for(ConsultationEntity consultationEntity : patientConsultations) {
-            if(consultationEntity.getDate().equals(date) && consultationEntity.getTime().equals(time)) {
+            if(consultationEntity.getDate().equals(date) && consultationEntity.getTime().equals(sdf3.format(time))) {
                 return false;
             }
         }
 
         for(AppointmentEntity appointmentEntity : patientAppointments) {
-            if(appointmentEntity.getDate().equals(date) && appointmentEntity.getTime().equals(time)) {
+            if(appointmentEntity.getDate().equals(date) && appointmentEntity.getTime().equals(sdf3.format(time))) {
                 return false;
             }
         }
         return true;
         
         
-    }
-
-    @Override
-    public PatientEntity patientLogin(String username, String password) throws InvalidLoginException {
-        try {
-            PatientEntity patientEntity = retrievePatientEntityByIc(username);
-            
-            if(patientEntity.verifyPassword(password)) {
-                return patientEntity;
-            } else {
-                throw new InvalidLoginException("Username does not exist or invalid password!");
-            }
-            
-        } catch (PatientNotFoundException ex) {
-            throw new InvalidLoginException("Patient does not exist");
-        }
     }
     
     @Override
@@ -140,7 +128,7 @@ public class PatientEntityController implements PatientEntityControllerRemote, P
         {
             PatientEntity patientEntity = retrievePatientEntityByIc(identityNumber);
             
-            if(patientEntity.getPassword().equals(password))
+            if(patientEntity.verifyPassword(password))
             {
                 return patientEntity;
             }

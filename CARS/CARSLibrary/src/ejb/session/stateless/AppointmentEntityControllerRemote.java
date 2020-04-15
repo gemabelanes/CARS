@@ -38,5 +38,9 @@ public interface AppointmentEntityControllerRemote {
     List<AppointmentEntity> retrieveAppointmentsByDoctor(DoctorEntity doctorEntity);
 
     List<AppointmentEntity> retrieveAppointmentsByPatient(PatientEntity patientEntity);
+
+    DoctorEntity fetchAppointmentsDoctor(long appointmentId) throws AppointmentNotFoundException;
+    
+    
     
 }

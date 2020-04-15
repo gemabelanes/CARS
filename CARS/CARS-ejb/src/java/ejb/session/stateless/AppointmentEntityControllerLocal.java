@@ -13,6 +13,7 @@ import java.util.List;
 import javax.ejb.Local;
 import util.exception.AppointmentNotFoundException;
 import util.exception.CreateAppointmentException;
+import util.exception.DeleteAppointmentExceptionWs;
 import util.exception.DoctorRemoveAppointmentException;
 import util.exception.PatientRemoveAppointmentException;
 
@@ -38,5 +39,11 @@ public interface AppointmentEntityControllerLocal {
     List<AppointmentEntity> retrieveAppointmentsByDoctor(DoctorEntity doctorEntity);
 
     List<AppointmentEntity> retrieveAppointmentsByPatient(PatientEntity patientEntity);
+
+    long createAppointmentEntityWs(long appointmentId, long doctorId, long patientId) throws CreateAppointmentException;
+
+    public void deleteAppointmentEntityByIdWs(long appointmentId, long doctorId, long patientId) throws DoctorRemoveAppointmentException, PatientRemoveAppointmentException, DeleteAppointmentExceptionWs;
+
+    DoctorEntity fetchAppointmentsDoctor(long appointmentId) throws AppointmentNotFoundException;
     
 }

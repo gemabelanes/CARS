@@ -1,0 +1,1 @@
+ejb.session.singleton.DataInitializationSessionBean

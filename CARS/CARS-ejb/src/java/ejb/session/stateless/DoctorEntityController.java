@@ -9,6 +9,7 @@ import entity.AppointmentEntity;
 import entity.ConsultationEntity;
 import entity.DoctorEntity;
 import java.sql.Time;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -30,6 +31,8 @@ public class DoctorEntityController implements DoctorEntityControllerRemote, Doc
 
     @PersistenceContext(unitName = "CARSLibraryPU")
     private javax.persistence.EntityManager entityManager;
+    SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
+    SimpleDateFormat sdf3 = new SimpleDateFormat("HH:mm");
 
     public DoctorEntityController() {
     }
@@ -78,17 +81,21 @@ public class DoctorEntityController implements DoctorEntityControllerRemote, Doc
         fetchDoctor.getConsultations().size();
         fetchDoctor.getDoctorAppointments().size();
         
-        List<ConsultationEntity> doctorConsultations = fetchDoctor.getDoctorConsultations();
+        
         List<AppointmentEntity> doctorAppointments = fetchDoctor.getDoctorAppointments();
-
+        System.err.println("Created appointmentlist");
+        List<ConsultationEntity> doctorConsultations = fetchDoctor.getDoctorConsultations();
+        System.err.println("Created cosultationlist");
         for(ConsultationEntity consultationEntity : doctorConsultations) {
-            if(consultationEntity.getDate().equals(date) && consultationEntity.getTime().equals(time)) {
+            //System.err.println("SAME DATE? : " + consultationEntity.getDate().equals(date) );
+            //System.err.println("SAME TIME? : " + consultationEntity.getTime().equals(sdf3.format(time)));
+            if(consultationEntity.getDate().equals(date) && consultationEntity.getTime().equals(sdf3.format(time))) {
                 return false;
             }
         }
 
         for(AppointmentEntity appointmentEntity : doctorAppointments) {
-            if(appointmentEntity.getDate().equals(date) && appointmentEntity.getTime().equals(time)) {
+            if(appointmentEntity.getDate().equals(date) && appointmentEntity.getTime().equals(sdf3.format(time))) {
                 return false;
             }
         }

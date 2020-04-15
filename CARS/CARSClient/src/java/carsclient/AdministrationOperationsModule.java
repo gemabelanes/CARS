@@ -264,16 +264,17 @@ public class AdministrationOperationsModule
             System.out.print("Enter Age (blank if no change)> ");
             int age;
             try {
-                age = sc.nextInt();
-                sc.nextLine();
+                input = sc.nextLine().trim();
+                //sc.nextLine();
                 if(input.length() > 0)
                 {
+                    age = Integer.parseInt(input);
                     patientEntity.setAge(Integer.parseInt(input));
                 }
                 break;
             } catch (Exception ex) {
                 System.out.println("Please enter a valid integer.");
-                sc.nextLine();
+                //sc.nextLine();
             }
 
         }

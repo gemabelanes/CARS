@@ -123,21 +123,58 @@ public class RegistrationOperationModule {
         
         
         while (true) {
-            System.out.print("Enter Identity Number> ");
-            String ic = sc.nextLine();
+            String ic;
+            while (true) {
+                System.out.print("Enter Identity Number> ");
+                ic = sc.nextLine();
+                if(ic.equals("0")) {
+                    return;
+                }
+                if(ic.trim().length() > 0) {
+                    break;
+                }
+            }
             if(ic.equals("0")) {
                 return;
             }
             //System.out.println("DEBUG LINE 1 : " + patientEntityControllerRemote.doesPatientExistByIc(ic));
             if(!patientEntityControllerRemote.doesPatientExistByIc(ic)) {
-                System.out.print("Enter Password> ");
-                String password = sc.nextLine();
-                System.out.print("Enter First Name> ");
-                String firstName = sc.nextLine();
-                System.out.print("Enter Last Name> ");
-                String lastName = sc.nextLine();
-                System.out.print("Enter Gender> ");
-                String gender = sc.nextLine();
+                String password;
+                while (true) {
+                    System.out.print("Enter Password> ");
+                    password = sc.nextLine();
+                    boolean isNumeric = password.chars().allMatch( Character::isDigit );
+                    if(isNumeric && (password.length() == 6)) {
+                        break;
+                    } else {
+                        System.out.println("Please enter a valid 6 pin NUMERIC password.");
+                    }
+                    
+                }
+                String firstName;
+                while (true) {
+                    System.out.print("Enter First Name> ");
+                    firstName = sc.nextLine();
+                    if(firstName.trim().length() > 0) {
+                        break;
+                    }
+                }
+                String lastName;
+                while (true) {
+                    System.out.print("Enter First Name> ");
+                    lastName = sc.nextLine();
+                    if(lastName.trim().length() > 0) {
+                        break;
+                    }
+                }
+                String gender;
+                while (true) {
+                    System.out.print("Enter gender > ");
+                    gender = sc.nextLine();
+                    if(gender.trim().length() > 0) {
+                        break;
+                    }
+                }
                 Integer age;
                 while (true) {
                     try {
@@ -149,10 +186,22 @@ public class RegistrationOperationModule {
                         System.out.println("Please enter a valid integer.");
                     }
                 }
-                System.out.print("Enter Phone Number> ");
-                String phoneNumber = sc.nextLine();
-                System.out.print("Enter Address> ");
-                String address = sc.nextLine();
+                String phoneNumber;
+                while (true) {
+                    System.out.print("Enter Phone Number> ");
+                    phoneNumber = sc.nextLine();
+                    if(phoneNumber.trim().length() > 0) {
+                        break;
+                    }
+                }
+                String address;
+                while (true) {
+                    System.out.print("Enter Address> ");
+                    address = sc.nextLine();
+                    if(address.trim().length() > 0) {
+                        break;
+                    }
+                }
                 
                 PatientEntity newPatient = new PatientEntity(ic, firstName, lastName, gender, age, phoneNumber, address, password);
                 patientEntityControllerRemote.createNewPatient(newPatient);
@@ -171,12 +220,6 @@ public class RegistrationOperationModule {
 
     private void registerWalkInConsultation() throws ParseException {
         System.out.println("*** CARS :: Registration Operation :: Register Walk-In Consultation ***");
-        // Actual date
-        //Date today = Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant());
-        // Fake date : Monday, 2020-05-11 14:00 hrs
-        //Date today = new SimpleDateFormat("yyyy-MM-dd HH:mm").parse("2020-05-14 11:00");
-        //String todayString = sdf2.format(today);
-        //Date todayFormatted = sdf2.parse(todayString);
         fetchToday();
         Calendar tempDow = Calendar.getInstance();
         Calendar tempRound = Calendar.getInstance();
@@ -335,7 +378,7 @@ public class RegistrationOperationModule {
             int queueNum = getCounter();
             
             try {
-                ConsultationEntity newConsultation = new ConsultationEntity(queueNum, patientEntity, doctorEntity, todayFormatted, firstFreeSlot);
+                ConsultationEntity newConsultation = new ConsultationEntity(queueNum, patientEntity, doctorEntity, todayFormatted, sdf3.format(firstFreeSlot));
                 consultationEntityControllerRemote.createConsultationEntity(newConsultation);
                 System.out.println(patientEntity.getFullName() + " appointment is confirmed with DR." + doctorEntity.getFullName() + " at " + sdf3.format(firstFreeSlot));
                 System.out.println("Queue Number: " + queueNum + ".\n");
@@ -439,13 +482,15 @@ public class RegistrationOperationModule {
                 ArrayList<AppointmentEntity> patientAppointments = new ArrayList<>();
                 
                 for(AppointmentEntity appointmentEntity : fetchAppointments) {
-                    if(!appointmentEntity.getTime().before(currentTime)) {
+                    Time appointmentTime = new Time(sdf3.parse(appointmentEntity.getTime()).getTime());
+                    if(!appointmentTime.before(currentTime)) {
                         patientAppointments.add(appointmentEntity);
                     }
                 }
                 
                 if(patientAppointments.size() == 0) {
                     System.out.println("No appointment records found for patient : " + patientEntity.getIdentityNumber());
+                    return;
                 } else { 
                     System.out.println("Appointments: ");
                     System.out.printf("%-5s%-20s%-15s%-30s", "Id ", "| Date ", "| Time", "| Doctor");

@@ -9,7 +9,9 @@ import java.io.Serializable;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
 import java.util.Objects;
+import java.security.SecureRandom;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.Column;
@@ -38,8 +40,14 @@ public class StaffEntity implements Serializable {
     private String password;
     @Transient
     private String fullName;
+    private String salt;
 
     public StaffEntity() {
+        
+        SecureRandom random = new SecureRandom();
+        byte bytes[] = new byte[16];
+        random.nextBytes(bytes);
+        salt = Base64.getEncoder().encodeToString(bytes);
     }
 
     public String getFullName() {
@@ -51,12 +59,13 @@ public class StaffEntity implements Serializable {
     }
 
     public StaffEntity(String firstName, String lastName, String username, String password) {
+        this();
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
         this.fullName = firstName + " " + lastName;
         try {
-            this.password = createHash(password);
+            this.password = createHash(salt + password);
         } catch (NoSuchAlgorithmException ex) {
             Logger.getLogger(StaffEntity.class.getName()).log(Level.SEVERE, null, ex);
             System.out.println("Error creating Staff");
@@ -68,7 +77,7 @@ public class StaffEntity implements Serializable {
     public boolean verifyPassword(String password) {
         String enteredPassword;
         try {
-            enteredPassword = createHash(password);
+            enteredPassword = createHash(salt + password);
             return enteredPassword.equals(this.password);
         } catch (NoSuchAlgorithmException ex) {
             System.out.println("Error verifying password");
@@ -133,7 +142,7 @@ public class StaffEntity implements Serializable {
 
     public void setPassword(String password) {
         try {
-            this.password = createHash(password);
+            this.password = createHash(salt + password);
         } catch (NoSuchAlgorithmException ex) {
             //Logger.getLogger(StaffEntity.class.getName()).log(Level.SEVERE, null, ex);
             System.out.println("Error setting password");

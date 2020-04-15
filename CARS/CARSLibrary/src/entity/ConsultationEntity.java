@@ -5,6 +5,8 @@
  */
 package entity;
 
+import cars.xmladapters.DateAdapter;
+import cars.xmladapters.SQLTimeAdapter;
 import java.io.Serializable;
 import java.sql.Time;
 import java.util.Date;
@@ -16,6 +18,9 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
  *
@@ -30,10 +35,14 @@ public class ConsultationEntity implements Serializable{
     @Column(nullable=false)
     private Integer queueNum;
     @Column(nullable=false)
+    //@XmlElement(name = "consultationDate")
+    //@XmlJavaTypeAdapter(DateAdapter.class)
     @Temporal(TemporalType.TIMESTAMP)
-    private Date date;
+    private Date consultationDate;
+    //@XmlElement(name = "consultationTime")
+    ///@XmlJavaTypeAdapter(SQLTimeAdapter.class)
     @Column(nullable=false)
-    private Time time;
+    private String consultationTime;
     
     
     
@@ -45,20 +54,20 @@ public class ConsultationEntity implements Serializable{
     public ConsultationEntity() {
     }
 
-    public ConsultationEntity(Integer queueNum, PatientEntity patientEntity, DoctorEntity doctorEntity, Date date, Time time) {
+    public ConsultationEntity(Integer queueNum, PatientEntity patientEntity, DoctorEntity doctorEntity, Date date, String time) {
         this.queueNum = queueNum;
         this.patientEntity = patientEntity;
         this.doctorEntity = doctorEntity;
-        this.date = date;
-        this.time = time;
+        this.consultationDate = date;
+        this.consultationTime = time;
     }
     
     public ConsultationEntity(Integer queueNum, AppointmentEntity appointmentEntity) {
         this.queueNum = queueNum;
         this.patientEntity = appointmentEntity.getPatientEntity();
         this.doctorEntity = appointmentEntity.getDoctorEntity();
-        this.date = appointmentEntity.getDate();
-        this.time = appointmentEntity.getTime();
+        this.consultationDate = appointmentEntity.getDate();
+        this.consultationTime = appointmentEntity.getTime();
     
     }
 
@@ -78,6 +87,7 @@ public class ConsultationEntity implements Serializable{
         this.queueNum = queueNum;
     }
 
+     @XmlTransient
     public PatientEntity getPatientEntity() {
         return patientEntity;
     }
@@ -86,6 +96,7 @@ public class ConsultationEntity implements Serializable{
         this.patientEntity = patientEntity;
     }
 
+     @XmlTransient
     public DoctorEntity getDoctorEntity() {
         return doctorEntity;
     }
@@ -95,19 +106,19 @@ public class ConsultationEntity implements Serializable{
     }
 
     public Date getDate() {
-        return date;
+        return consultationDate;
     }
 
     public void setDate(Date date) {
-        this.date = date;
+        this.consultationDate = date;
     }
 
-    public Time getTime() {
-        return time;
+    public String getTime() {
+        return consultationTime;
     }
 
-    public void setTime(Time time) {
-        this.time = time;
+    public void setTime(String time) {
+        this.consultationTime = time;
     }
     
     
