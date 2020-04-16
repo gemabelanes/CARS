@@ -23,6 +23,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import util.exception.AppointmentNotFoundException;
 import util.exception.CreateAppointmentException;
 import util.exception.DoctorNotFoundException;
@@ -57,7 +59,7 @@ public class AppointmentOperationsModule {
                 
     }
     
-    void appointmentMainMenu() {
+    void appointmentMainMenu() throws ParseException {
         Scanner sc = new Scanner(System.in);
 
         while(true) {
@@ -102,7 +104,13 @@ public class AppointmentOperationsModule {
        System.out.println("*** Self-Service Kiosk :: View Appointments ***\n");
             
        
-           PatientEntity patientEntity = loggedInPatient;
+           PatientEntity patientEntity;
+            try {
+                patientEntity = patientEntityControllerRemote.retrievePatientEntityByIc(loggedInPatient.getIdentityNumber());
+            } catch (PatientNotFoundException ex) {
+                System.out.println("Error retrieving current patient");
+                return;
+            }
            
            List<AppointmentEntity> patientAppointments = appointmentEntityControllerRemote.retrieveAppointmentsByPatient(patientEntity);
            
@@ -186,7 +194,7 @@ public class AppointmentOperationsModule {
                         break;
                     }
                 } catch (ParseException ex) {
-                    System.out.println("Invalid Date Format, enter in yyyy-mm-dd. (Enter 0 to return to Appointment Operations Menu)");
+                    System.out.println("Invalid Date Format, enter in yyyy-mm-dd.");
                     //Logger.getLogger(ReservationOperationModule.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
@@ -257,7 +265,7 @@ public class AppointmentOperationsModule {
                     System.out.print(sdf3.format(time) + " ");
                 }
                 System.out.println();
-                System.out.print("Enter Time (Enter 0 to return to Appointment Operations Menu)> ");
+                System.out.print("Enter Time > ");
                 String sTime = sc.nextLine().trim();
                 if(sTime.equals("0")) {
                     return;
@@ -266,7 +274,13 @@ public class AppointmentOperationsModule {
                 if(timeSlots.contains(selectedTime)) {
                     while (true) {
                         try {
-                            PatientEntity patientEntity = loggedInPatient;
+                            PatientEntity patientEntity;
+                            try {
+                                patientEntity = patientEntityControllerRemote.retrievePatientEntityByIc(loggedInPatient.getIdentityNumber());
+                            } catch (PatientNotFoundException ex) {
+                                System.out.println("Error retrieving current patient");
+                                return;
+                            }
                             if(patientEntityControllerRemote.patientAvailableAtTime(patientEntity, selectedTime, selectedDate)) {
                                 AppointmentEntity newAppointment = new AppointmentEntity(selectedDate, sTime, patientEntity, doctorEntity);
                                 long createNewAppointment = appointmentEntityControllerRemote.createAppointmentEntity(newAppointment);
@@ -274,7 +288,7 @@ public class AppointmentOperationsModule {
                                 break;
                             } else {
                                 System.out.println("Patient already has an existing appointment at " + sTime + ". Please try again.");
-                                addAppointment();
+                                return;
                             }
                         } catch (CreateAppointmentException ex) {
                             System.out.println("Error creating new appointment");
@@ -290,34 +304,59 @@ public class AppointmentOperationsModule {
         } 
     }
 
-    void cancelAppointment() {
+    void cancelAppointment() throws ParseException {
         System.out.println("*** Self-Service Kiosk :: Cancel Appointment ***\n");
         
         Scanner sc = new Scanner(System.in);
+        Date today = Calendar.getInstance().getTime();
+        Time time;
+        String cTime = sdf3.format(today);
+        time = new Time(sdf3.parse(cTime).getTime());
         
         while(true) 
         {
-            PatientEntity patientEntity = loggedInPatient;
+            PatientEntity patientEntity;
+            try {
+                patientEntity = patientEntityControllerRemote.retrievePatientEntityByIc(loggedInPatient.getIdentityNumber());
+            } catch (PatientNotFoundException ex) {
+                System.out.println("Error retrieving current patient");
+                return;
+            }
             
-            List<AppointmentEntity> patientAppointments = appointmentEntityControllerRemote.retrieveAppointmentsByPatient(patientEntity);
+            List<AppointmentEntity> fetchAppointments = appointmentEntityControllerRemote.retrieveAppointmentsByPatient(patientEntity);
+            ArrayList<AppointmentEntity> patientAppointments = new ArrayList<>();
                 
-            if(patientAppointments.size() == 0) 
+            if(fetchAppointments.size() == 0) 
             {
                 System.out.println("No appointment records found for patient : " + patientEntity.getIdentityNumber());
                 return;
             } 
             else 
             { 
-                System.out.println("Appointments: ");
-                System.out.printf("%-5s%-20s%-15s%-30s", "Id ", "| Date ", "| Time", "| Doctor");
-                System.out.println();
-                for(AppointmentEntity ae : patientAppointments) {
-                    System.out.printf("%-5s%-20s%-15s%-30s", ae.getAppointmentId(), "| " + new SimpleDateFormat("yyyy-MM-dd").format(ae.getDate()), "| " + ae.getTime(), "| " + ae.getDoctorEntity().getFullName());
+                
+                for(AppointmentEntity ae : fetchAppointments) {
+                    Time appointmentTime = new Time(sdf3.parse(ae.getTime()).getTime());
+                    if(ae.getDate().compareTo(today) > 0 || (sdf2.format(ae.getDate()).equals(sdf2.format(ae.getDate()))&& !time.after(appointmentTime))) {
+                        patientAppointments.add(ae);
+                    }
+                }
+                
+                if(patientAppointments.size() == 0) {
+                    System.out.println("No appointment records found for patient : " + patientEntity.getIdentityNumber());
+                    return;
+                } else {
+                    System.out.println("Appointments: ");
+                    System.out.printf("%-5s%-20s%-15s%-30s", "Id ", "| Date ", "| Time", "| Doctor");
                     System.out.println();
+                    for(AppointmentEntity ae : patientAppointments) {
+                        System.out.printf("%-5s%-20s%-15s%-30s", ae.getAppointmentId(), "| " + new SimpleDateFormat("yyyy-MM-dd").format(ae.getDate()), "| " + ae.getTime(), "| " + ae.getDoctorEntity().getFullName());
+                        System.out.println();
+                    }
                 }
                 System.out.println();
             }
 
+            
             while(true) 
             {
                 try 

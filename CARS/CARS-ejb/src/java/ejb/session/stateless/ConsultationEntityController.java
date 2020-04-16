@@ -79,6 +79,8 @@ public class ConsultationEntityController implements ConsultationEntityControlle
     public void updateConsultationEntity(ConsultationEntity consultationEntity) {
         entityManager.merge(consultationEntity);
     }
+    
+    
 
     @Override
     public void deleteConsultationEntityById(long consultationId) throws DoctorRemoveConsultationException, PatientRemoveConsultationException {

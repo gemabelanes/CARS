@@ -41,6 +41,8 @@ public class AppointmentEntity implements Serializable {
     private PatientEntity patientEntity;
     @ManyToOne
     private DoctorEntity doctorEntity;
+    
+    private boolean consumed = false;
 
     public AppointmentEntity() {
     }
@@ -52,6 +54,16 @@ public class AppointmentEntity implements Serializable {
         this.doctorEntity = doctorEntity;
     }
 
+    public boolean isConsumed() {
+        return consumed;
+    }
+
+    public void setConsumed() {
+        consumed = true;
+    }
+
+    
+    
     public Long getAppointmentId() {
         return appointmentId;
     }

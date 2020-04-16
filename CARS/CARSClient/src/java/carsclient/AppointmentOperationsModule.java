@@ -60,7 +60,7 @@ public class AppointmentOperationsModule {
                 
     }
     
-    void appointmentMainMenu() {
+    void appointmentMainMenu() throws ParseException {
         Scanner sc = new Scanner(System.in);
 
         while(true) {
@@ -308,10 +308,14 @@ public class AppointmentOperationsModule {
         } 
     }
 
-    private void cancelAppointment() {
+    private void cancelAppointment() throws ParseException {
         System.out.println("*** CARS :: Appointment Operation :: Cancel Appointment *** \n");
         
         Scanner sc = new Scanner(System.in);
+        Date today = Calendar.getInstance().getTime();
+        Time time;
+        String cTime = sdf3.format(today);
+        time = new Time(sdf3.parse(cTime).getTime());
         
         while(true) {
             try {
@@ -327,20 +331,38 @@ public class AppointmentOperationsModule {
                     patientEntity = loggedInPatient;
                 }
                 System.out.println();
-                List<AppointmentEntity> patientAppointments = appointmentEntityControllerRemote.retrieveAppointmentsByPatient(patientEntity);
                 
-                if(patientAppointments.size() == 0) {
+                List<AppointmentEntity> fetchAppointments = appointmentEntityControllerRemote.retrieveAppointmentsByPatient(patientEntity);
+                ArrayList<AppointmentEntity> patientAppointments = new ArrayList<>();
+                
+                if(fetchAppointments.size() == 0) 
+                {
                     System.out.println("No appointment records found for patient : " + patientEntity.getIdentityNumber());
                     return;
-                } else { 
-                    System.out.println("Appointments: ");
-                    System.out.printf("%-5s%-20s%-15s%-30s", "Id ", "| Date ", "| Time", "| Doctor");
-                    System.out.println();
-                    for(AppointmentEntity ae : patientAppointments) {
-                        System.out.printf("%-5s%-20s%-15s%-30s", ae.getAppointmentId(), "| " + sdf2.format(ae.getDate()), "| " + ae.getTime(), "| " + ae.getDoctorEntity().getFullName());
+                } else {
+                    
+                    for(AppointmentEntity ae : fetchAppointments) {
+                        Time appointmentTime = new Time(sdf3.parse(ae.getTime()).getTime());
+                        if(ae.getDate().compareTo(today) > 0 || (sdf2.format(ae.getDate()).equals(sdf2.format(ae.getDate()))&& !time.after(appointmentTime))) {
+                            patientAppointments.add(ae);
+                        }
+                    }
+
+                    if(patientAppointments.size() == 0) {
+                        System.out.println("No appointment records found for patient : " + patientEntity.getIdentityNumber());
+                        return;
+                    } else { 
+                        System.out.println("Appointments: ");
+                        System.out.printf("%-5s%-20s%-15s%-30s", "Id ", "| Date ", "| Time", "| Doctor");
+                        System.out.println();
+                        for(AppointmentEntity ae : patientAppointments) {
+                            if(ae.getDate().after(today)) {
+                                System.out.printf("%-5s%-20s%-15s%-30s", ae.getAppointmentId(), "| " + sdf2.format(ae.getDate()), "| " + ae.getTime(), "| " + ae.getDoctorEntity().getFullName());
+                                System.out.println();
+                            }
+                        }
                         System.out.println();
                     }
-                    System.out.println();
                 }
                 
                 while(true) {

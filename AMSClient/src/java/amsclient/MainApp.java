@@ -29,7 +29,7 @@ public class MainApp {
     public MainApp() {
     }
     
-    public void runApp() throws ParseException_Exception
+    public void runApp() throws ParseException_Exception, ParseException
     {
         System.out.println("STARTING UP...\n");
         Scanner sc = new Scanner(System.in);
@@ -91,7 +91,7 @@ public class MainApp {
     }
     
     
-    private void menuMain() throws ParseException_Exception
+    private void menuMain() throws ParseException_Exception, ParseException
     {
         Scanner sc = new Scanner(System.in);
         Integer response = 0;

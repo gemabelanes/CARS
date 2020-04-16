@@ -51,8 +51,8 @@ public class DataInitializationSessionBean
         staffEntityControllerLocal.createNewStaffEntity(new StaffEntity("Eric", "Some", "manager", "password"));
         staffEntityControllerLocal.createNewStaffEntity(new StaffEntity("Victoria", "Newton", "nurse", "password"));
 
-        patientEntityControllerLocal.createNewPatient(new PatientEntity("S9867027A", "Sarah", "Yi", "F", 22, "93718799", "13, Clementi Road", "password"));
-        patientEntityControllerLocal.createNewPatient(new PatientEntity("G1314207T", "Rajesh", "Singh", "M", 36, "93506839", "15, Mountbatten Road", "password"));
+        patientEntityControllerLocal.createNewPatient(new PatientEntity("S9867027A", "Sarah", "Yi", "F", 22, "93718799", "13, Clementi Road", "000000"));
+        patientEntityControllerLocal.createNewPatient(new PatientEntity("G1314207T", "Rajesh", "Singh", "M", 36, "93506839", "15, Mountbatten Road", "000000"));
 
         doctorEntityControllerLocal.createNewDoctor(new DoctorEntity("Tan", "Ming", "S10011", "BMBS"));
         doctorEntityControllerLocal.createNewDoctor(new DoctorEntity("Clair", "Han", "S41221", "MBBCh"));
