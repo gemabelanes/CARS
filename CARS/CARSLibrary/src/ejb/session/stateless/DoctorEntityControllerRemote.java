@@ -30,5 +30,7 @@ public interface DoctorEntityControllerRemote  {
     boolean doctorAvailableAtTime(DoctorEntity doctorEntity, Time time, Date date);
 
     void deleteDoctorEntityById(long doctorId);
+
+    Boolean doesDoctorExistByRegistration(String registration);
     
 }

@@ -34,7 +34,7 @@ public class StaffEntity implements Serializable {
     private String firstName;
     @Column(nullable=false)
     private String lastName;
-    @Column(nullable=false)
+    @Column(nullable=false, unique = true)
     private String username;
     @Column(nullable=false)
     private String password;

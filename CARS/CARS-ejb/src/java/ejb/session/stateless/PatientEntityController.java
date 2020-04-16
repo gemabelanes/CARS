@@ -94,6 +94,8 @@ public class PatientEntityController implements PatientEntityControllerRemote, P
         }
         return true;
     }
+    
+    
 
     @Override
     public boolean patientAvailableAtTime(PatientEntity patientEntity, Time time, Date date) {
@@ -142,5 +144,7 @@ public class PatientEntityController implements PatientEntityControllerRemote, P
             throw new InvalidLoginException("Username does not exist or invalid password!");
         }
     }
+
+    
     
 }

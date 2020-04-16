@@ -575,7 +575,11 @@ public class AdministrationOperationsModule
                 return;
             }
             if(registration.trim().length() > 0) {
-                break;
+                if(doctorEntityControllerRemote.doesDoctorExistByRegistration(registration)) {
+                    System.out.println("Doctor with Registration : " + registration + " already exists! Please try again.\n");         
+                } else {
+                    break;
+                }
             }
         }
         String qualifications;
@@ -847,7 +851,7 @@ public class AdministrationOperationsModule
         }
         String lastName;
         while (true) {
-            System.out.print("Enter First Name> ");
+            System.out.print("Enter Last Name> ");
             lastName = sc.nextLine();
             if(lastName.equals("0")) {
                 return;
@@ -864,7 +868,11 @@ public class AdministrationOperationsModule
                 return;
             }
             if(username.trim().length() > 0) {
-                break;
+                if(staffEntityControllerRemote.doesUsernameExist(username)) {
+                    System.out.println("Username already exists. Please try again. \n");
+                } else {
+                    break;
+                }
             }
         }
         

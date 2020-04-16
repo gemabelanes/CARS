@@ -31,5 +31,7 @@ public interface StaffEntityControllerLocal {
     void updateStaffEntity(StaffEntity staffEntity);
 
     void deleteStaffEntityById(long staffId) throws StaffNotFoundException;
+
+    boolean doesUsernameExist(String username);
     
 }

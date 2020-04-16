@@ -73,6 +73,8 @@ public class DoctorEntityController implements DoctorEntityControllerRemote, Doc
         entityManager.remove(doctorEntity);
         entityManager.flush();
     }
+    
+    
 
     @Override
     public boolean doctorAvailableAtTime(DoctorEntity doctorEntity, Time time, Date date) {
@@ -101,6 +103,17 @@ public class DoctorEntityController implements DoctorEntityControllerRemote, Doc
         }
         return true;
             
+    }
+
+    @Override
+    public Boolean doesDoctorExistByRegistration(String registration) {
+        Query query = entityManager.createQuery("SELECT d FROM DoctorEntity d WHERE d.registration = :inRegistration");
+        query.setParameter("inRegistration", registration);
+        System.err.println("QUERY SIZE IS : " + query.getResultList().size());
+        if(query.getResultList().isEmpty() || query.getResultList() == null ) {
+            return false;
+        }
+        return true;
     }
     
     

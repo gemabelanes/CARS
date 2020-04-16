@@ -105,6 +105,17 @@ public class StaffEntityController implements StaffEntityControllerRemote, Staff
         entityManager.remove(staffEntity);
         entityManager.flush();
     }
+
+    @Override
+    public boolean doesUsernameExist(String username) {
+        Query query = entityManager.createQuery("SELECT s FROM StaffEntity s WHERE s.username = :inUsername");
+        query.setParameter("inUsername", username);
+        System.err.println("QUERY SIZE IS : " + query.getResultList().size());
+        if(query.getResultList().isEmpty() || query.getResultList() == null ) {
+            return false;
+        }
+        return true;
+    }
     
     
 }

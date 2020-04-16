@@ -41,7 +41,7 @@ public class PatientEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long patientId;
-    @Column(nullable=false)
+    @Column(nullable=false, unique = true)
     private String identityNumber;
     @Column(nullable=false)
     private String firstName;

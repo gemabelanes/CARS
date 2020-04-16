@@ -40,5 +40,6 @@ public interface PatientEntityControllerLocal {
     boolean patientAvailableAtTime(entity.PatientEntity patientEntity, Time time, java.util.Date date);
 
 
+
     
 }

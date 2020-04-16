@@ -31,5 +31,7 @@ public interface DoctorEntityControllerLocal {
 
     boolean doctorAvailableAtTime(DoctorEntity doctorEntity, Time time, Date date);
 
+    Boolean doesDoctorExistByRegistration(String registration);
+
     
 }
