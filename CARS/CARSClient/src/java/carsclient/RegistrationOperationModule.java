@@ -466,17 +466,31 @@ public class RegistrationOperationModule {
                         }
                         sc.nextLine();
                         AppointmentEntity fetchAppointment = appointmentEntityControllerRemote.retrieveAppointmentById(appointmentId);
+                        
+                        String appointmentDate = new SimpleDateFormat("yyyy-MM-dd").format(fetchAppointment.getDate());
+                        
+                        
                         if(patientAppointments.contains(fetchAppointment)) {
-                            try {
-                                int queueNum = getCounter();
-                                ConsultationEntity newConsultation = new ConsultationEntity(queueNum, fetchAppointment);
-                                consultationEntityControllerRemote.createConsultationEntity(newConsultation);
-                                System.out.println(patientEntity.getFullName() + " appointment is confirmed with DR." + newConsultation.getDoctorEntity().getFullName() + " at " + sdf3.format(fetchAppointment.getTime()));
-                                System.out.println("Queue Number: " + queueNum + ".");
-                                //appointmentEntityControllerRemote.deleteAppointmentEntityById(appointmentId);
-                                //System.out.println(patientEntity.getFullName() + " appointment with DR." + fetchAppointment.getDoctorEntity().getFullName() + " at " + sdf3.format(fetchAppointment.getTime()) + " on " + sdf2.format(fetchAppointment.getDate()) + " has been cancelled.");
-                            } catch (CreateConsultationException ex) {
-                                System.out.println("Error occured while creating consultation.");
+                            if (appointmentDate.equals(todayString))
+                            {
+                                try 
+                                {
+                                    int queueNum = getCounter();
+                                    ConsultationEntity newConsultation = new ConsultationEntity(queueNum, fetchAppointment);
+                                    consultationEntityControllerRemote.createConsultationEntity(newConsultation);
+                                    System.out.println(patientEntity.getFullName() + " appointment is confirmed with DR." + newConsultation.getDoctorEntity().getFullName() + " at " + sdf3.format(fetchAppointment.getTime()));
+                                    System.out.println("Queue Number: " + queueNum + ".");
+                                    //appointmentEntityControllerRemote.deleteAppointmentEntityById(appointmentId);
+                                    //System.out.println(patientEntity.getFullName() + " appointment with DR." + fetchAppointment.getDoctorEntity().getFullName() + " at " + sdf3.format(fetchAppointment.getTime()) + " on " + sdf2.format(fetchAppointment.getDate()) + " has been cancelled.");
+                                } 
+                                catch (CreateConsultationException ex) 
+                                {
+                                    System.out.println("Error occured while creating consultation.");
+                                }
+                            }
+                            else
+                            {
+                                System.out.println("Appointment is not set for today. Please come again next time.");
                             }
                         }
                     } catch (AppointmentNotFoundException ex) {
