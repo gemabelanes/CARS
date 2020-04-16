@@ -263,7 +263,7 @@ public class RegistrationOperationModule {
                             
                             break;
                         } catch (Exception ex) {
-                            System.out.println("Please enter an integer. (Enter 0 to return to Appointment Operations Menu)");
+                            System.out.println("Please enter an integer. (Enter 0 to return to Registration Operations Menu)");
                             sc.nextLine();
                         }
                     }
@@ -287,7 +287,7 @@ public class RegistrationOperationModule {
                             
                     //break;
                 } catch (DoctorNotFoundException ex) {
-                    System.out.println("Doctor ID does not exist! Please try again. (Enter 0 to return to Appointment Operations Menu)");
+                    System.out.println("Doctor ID does not exist! Please try again. (Enter 0 to return to Registration Operations Menu)");
                 }
             }
             
@@ -426,7 +426,7 @@ public class RegistrationOperationModule {
             try {
                 PatientEntity patientEntity;
                 if(Objects.isNull(loggedInPatient)) {
-                    System.out.print("Enter Patient Identity Number (Enter 0 to return to Appointment Operations Menu)> ");
+                    System.out.print("Enter Patient Identity Number (Enter 0 to return to Registration Operations Menu)> ");
                     String ic = sc.nextLine();
                     if(ic.equals("0")) {
                         return;
@@ -459,7 +459,7 @@ public class RegistrationOperationModule {
                 
                 while(true) {
                     try {
-                        System.out.print("Enter Appointment Id (Enter 0 to return to Appointment Operations Menu)> ");
+                        System.out.print("Enter Appointment Id (Enter 0 to return to Registration Operations Menu)> ");
                         int appointmentId = sc.nextInt();
                         if(appointmentId == 0) {
                             return;
