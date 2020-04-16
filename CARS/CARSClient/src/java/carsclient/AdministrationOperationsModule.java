@@ -84,7 +84,7 @@ public class AdministrationOperationsModule
                 {
                     doStaffManagement();
                 }
-                else if(response == 4 || response == 0)
+                else if(response == 4)
                 {
                     return;
                 }
@@ -136,7 +136,7 @@ public class AdministrationOperationsModule
                 {
                     doViewAllPatients();
                 }
-                else if(response == 6 || response == 0)
+                else if(response == 6)
                 {
                     return;
                 }
@@ -154,46 +154,121 @@ public class AdministrationOperationsModule
     private void doAddPatient()
     {
         Scanner sc = new Scanner(System.in);
-        PatientEntity newPatientEntity = new PatientEntity();
         
         System.out.println("*** CARS :: Administration Operation :: Patient Management :: Add Patient ***");
         
         while (true) {
-            System.out.print("Enter Identity Number> ");
-            String ic = sc.nextLine().trim();
+            String ic;
+            while (true) {
+                System.out.print("Enter Identity Number > ");
+                ic = sc.nextLine();
+                if(ic.equals("0")) {
+                    return;
+                }
+                if(ic.trim().length() > 0) {
+                    break;
+                }
+            }
+            if(ic.equals("0")) {
+                return;
+            }
+            //System.out.println("DEBUG LINE 1 : " + patientEntityControllerRemote.doesPatientExistByIc(ic));
             if(!patientEntityControllerRemote.doesPatientExistByIc(ic)) {
-                newPatientEntity.setIdentityNumber(ic);
+                String password;
+                while (true) {
+                    System.out.print("Enter Password> ");
+                    password = sc.nextLine();
+                    boolean isNumeric = password.chars().allMatch( Character::isDigit );
+                    if(isNumeric && (password.length() == 6)) {
+                        break;
+                    } else {
+                        System.out.println("Please enter a valid 6 pin NUMERIC password.");
+                    }
+                    
+                }
+                String firstName;
+                while (true) {
+                    System.out.print("Enter First Name> ");
+                    firstName = sc.nextLine();
+                    if(firstName.equals("0")) {
+                        return;
+                    }
+                    if(firstName.trim().length() > 0) {
+                        break;
+                    }
+                }
+                String lastName;
+                while (true) {
+                    System.out.print("Enter First Name> ");
+                    lastName = sc.nextLine();
+                    if(lastName.equals("0")) {
+                        return;
+                    }
+                    if(lastName.trim().length() > 0) {
+                        break;
+                    }
+                }
+                String gender;
+                while (true) {
+                    System.out.print("Enter gender > ");
+                    gender = sc.nextLine();
+                    if(gender.equals("0")) {
+                        return;
+                    }
+                    if(gender.trim().length() > 0) {
+                        break;
+                    }
+                }
+                Integer age;
+                while (true) {
+                    try {
+                        System.out.print("Enter Age> ");
+                        age = sc.nextInt();
+                        sc.nextLine();
+                        if(age == 0) {
+                            return;
+                        }
+                        break;
+                    } catch (Exception ex) {
+                        System.out.println("Please enter a valid integer.");
+                        sc.nextLine();
+                    }
+                }
+                String phoneNumber;
+                while (true) {
+                    System.out.print("Enter Phone Number> ");
+                    phoneNumber = sc.nextLine();
+                    if(phoneNumber.equals("0")) {
+                        return;
+                    }
+                    if(phoneNumber.trim().length() > 0) {
+                        break;
+                    }
+                }
+                String address;
+                while (true) {
+                    System.out.print("Enter Address> ");
+                    address = sc.nextLine();
+                    if(address.equals("0")) {
+                        return;
+                    }
+                    if(address.trim().length() > 0) {
+                        break;
+                    }
+                }
+                
+                PatientEntity newPatient = new PatientEntity(ic, firstName, lastName, gender, age, phoneNumber, address, password);
+                patientEntityControllerRemote.createNewPatient(newPatient);
+                try {
+                    System.out.println("Patient ID : " + patientEntityControllerRemote.retrievePatientEntityByIc(ic).getPatientId() + " has been registered successfully!");
+                } catch (PatientNotFoundException ex) {
+                    System.out.println("Error retrieving Patient IC : " + ic);
+                }
                 break;
             } else {
-                System.out.println("Patient IC : " + ic + " already exists! Please try again.");
+                System.out.println("Patient already exists! Please try again.");
             }
         }
-        System.out.print("Enter First Name> ");
-        newPatientEntity.setFirstName(sc.nextLine().trim());
-        System.out.print("Enter Last Name> ");
-        newPatientEntity.setLastName(sc.nextLine().trim());
-        System.out.print("Enter Gender> ");
-        newPatientEntity.setGender(sc.nextLine().trim());
-        while (true) {
-            try {
-                System.out.print("Enter Age> ");
-                int age = sc.nextInt();
-                newPatientEntity.setAge(age);
-                sc.nextLine();
-                break;
-            } catch (Exception ex) {
-                System.out.println("Please input a valid integer.");
-                sc.nextLine();
-            }
-        }
-        System.out.print("Enter Phone> ");
-        newPatientEntity.setPhoneNumber(sc.nextLine().trim());
-        System.out.print("Enter Address> ");
-        newPatientEntity.setAddress(sc.nextLine().trim());
-        
-        
-        Long newPatientEntityId = patientEntityControllerRemote.createNewPatient(newPatientEntity);
-        System.out.println("Patient has been added successfully!");
     }
     
     private void doViewPatientDetails()
@@ -201,9 +276,18 @@ public class AdministrationOperationsModule
         Scanner sc = new Scanner(System.in);
         
         System.out.println("*** CARS :: Administration Operation :: Patient Management :: View Patient Details ***\n");
+        String identityNumber;
         while (true) {
-            System.out.print("Enter Patient Identity Number> ");
-            String identityNumber = sc.nextLine().trim();
+            while (true) {
+                System.out.print("Enter Patient Identity Number> ");
+                identityNumber = sc.nextLine().trim();
+                if(identityNumber.equals("0")) {
+                    return;
+                }
+                if(identityNumber.length() > 0) {
+                    break;
+                }
+            }
 
             PatientEntity patientEntity = new PatientEntity();
             try
@@ -229,17 +313,25 @@ public class AdministrationOperationsModule
         while(true) {
             System.out.print("Enter Identity Number> ");
             input = sc.nextLine().trim();
-            try {
-                patientEntity = patientEntityControllerRemote.retrievePatientEntityByIc(input);
-                break;
-            } catch (PatientNotFoundException ex) {
-                System.out.println("Patient IC : " + input + " does not exist! Please try again.");
+            if(input.equals("0")) {
+                return;
+            }
+            if(input.length() > 0) {
+                try {
+                    patientEntity = patientEntityControllerRemote.retrievePatientEntityByIc(input);
+                    break;
+                } catch (PatientNotFoundException ex) {
+                    System.out.println("Patient IC : " + input + " does not exist! Please try again.");
+                }
             }
             
         }
         
         System.out.print("Enter First Name (blank if no change)> ");
         input = sc.nextLine().trim();
+        if(input.equals("0")) {
+            return;
+        }
         if(input.length() > 0)
         {
             patientEntity.setFirstName(input);
@@ -247,6 +339,9 @@ public class AdministrationOperationsModule
         
         System.out.print("Enter Last Name (blank if no change)> ");
         input = sc.nextLine().trim();
+        if(input.equals("0")) {
+            return;
+        }
         if(input.length() > 0)
         {
             patientEntity.setLastName(input);
@@ -254,6 +349,9 @@ public class AdministrationOperationsModule
         
         System.out.print("Enter Gender (blank if no change)> ");
         input = sc.nextLine().trim();
+        if(input.equals("0")) {
+            return;
+        }
         if(input.length() > 0)
         {
             patientEntity.setGender(input);
@@ -265,7 +363,9 @@ public class AdministrationOperationsModule
             int age;
             try {
                 input = sc.nextLine().trim();
-                //sc.nextLine();
+                if(input.equals("0")) {
+                    return;
+                }
                 if(input.length() > 0)
                 {
                     age = Integer.parseInt(input);
@@ -281,6 +381,9 @@ public class AdministrationOperationsModule
         
         System.out.print("Enter Phone (blank if no change)> ");
         input = sc.nextLine().trim();
+        if(input.equals("0")) {
+            return;
+        }
         if(input.length() > 0)
         {
             patientEntity.setLastName(input);
@@ -288,6 +391,9 @@ public class AdministrationOperationsModule
         
         System.out.print("Enter Address (blank if no change)> ");
         input = sc.nextLine().trim();
+        if(input.equals("0")) {
+            return;
+        }
         if(input.length() > 0)
         {
             patientEntity.setLastName(input);
@@ -306,12 +412,17 @@ public class AdministrationOperationsModule
         while(true) {
             System.out.print("Enter patient identity number> ");
             String identityNumber = sc.nextLine().trim();
-            try {
-                patientEntity = patientEntityControllerRemote.retrievePatientEntityByIc(identityNumber);
-                break;
-            } catch (PatientNotFoundException ex) {
-                System.out.println("Patient IC : " + identityNumber + " does not exist! Please try again.");
-                
+            if(identityNumber.equals("0")) {
+                return;
+            }
+            if(identityNumber.length() > 0) {
+                try {
+                    patientEntity = patientEntityControllerRemote.retrievePatientEntityByIc(identityNumber);
+                    break;
+                } catch (PatientNotFoundException ex) {
+                    System.out.println("Patient IC : " + identityNumber + " does not exist! Please try again.");
+
+                }
             }
         }
         
@@ -432,17 +543,54 @@ public class AdministrationOperationsModule
     private void doAddDoctor()
     {
         Scanner sc = new Scanner(System.in);
-        DoctorEntity newDoctorEntity = new DoctorEntity();
-        
         System.out.println("*** CARS :: Administration Operation :: Doctor Management :: Add Doctor ***");
-        System.out.print("Enter First Name> ");
-        newDoctorEntity.setFirstName(sc.nextLine().trim());
-        System.out.print("Enter Last Name> ");
-        newDoctorEntity.setLastName(sc.nextLine().trim());
-        System.out.print("Enter Registration> ");
-        newDoctorEntity.setRegistration(sc.nextLine().trim());
-        System.out.print("Enter Qualifications> ");
-        newDoctorEntity.setQualifications(sc.nextLine().trim());
+        
+        String firstName;
+        while (true) {
+            System.out.print("Enter First Name> ");
+            firstName = sc.nextLine();
+            if(firstName.equals("0")) {
+                return;
+            }
+            if(firstName.trim().length() > 0) {
+                break;
+            }
+        }
+        String lastName;
+        while (true) {
+            System.out.print("Enter First Name> ");
+            lastName = sc.nextLine();
+            if(lastName.equals("0")) {
+                return;
+            }
+            if(lastName.trim().length() > 0) {
+                break;
+            }
+        }
+        String registration;
+        while (true) {
+            System.out.print("Enter Registration > ");
+            registration = sc.nextLine();
+            if(registration.equals("0")) {
+                return;
+            }
+            if(registration.trim().length() > 0) {
+                break;
+            }
+        }
+        String qualifications;
+        while (true) {
+            System.out.print("Enter Qualifications > ");
+            qualifications = sc.nextLine().trim();
+            if(qualifications.equals("0")) {
+                return;
+            }
+            if(qualifications.trim().length() > 0) {
+                break;
+            }
+        }
+        
+        DoctorEntity newDoctorEntity = new DoctorEntity(firstName, lastName, registration, qualifications);
         
         Long newDoctorEntityId = doctorEntityControllerRemote.createNewDoctor(newDoctorEntity);
         System.out.println("Doctor has been added successfully!");
@@ -460,6 +608,9 @@ public class AdministrationOperationsModule
                     System.out.print("Enter Doctor Id> ");
                     doctorId = sc.nextLong();
                     sc.nextLine();
+                    if(doctorId == 0) {
+                        return;
+                    }
                     break;
                 } catch (Exception ex) {
                     System.out.println("Please enter a valid integer.");
@@ -492,6 +643,9 @@ public class AdministrationOperationsModule
             System.out.print("Enter DoctorId> ");
             doctorId = sc.nextLong();
             sc.nextLine();
+            if(doctorId == 0) {
+                        return;
+            }
             try {
                 doctorEntity = doctorEntityControllerRemote.retrieveDoctorEntityById(doctorId);
                 break;
@@ -502,6 +656,9 @@ public class AdministrationOperationsModule
         
         System.out.print("Enter First Name (blank if no change)> ");
         input = sc.nextLine().trim();
+        if(input.equals("0")) {
+            return;
+        }
         if(input.length() > 0)
         {
             doctorEntity.setFirstName(input);
@@ -509,6 +666,9 @@ public class AdministrationOperationsModule
         
         System.out.print("Enter Last Name (blank if no change)> ");
         input = sc.nextLine().trim();
+        if(input.equals("0")) {
+            return;
+        }
         if(input.length() > 0)
         {
             doctorEntity.setLastName(input);
@@ -516,6 +676,9 @@ public class AdministrationOperationsModule
         
         System.out.print("Enter Registration (blank if no change)> ");
         input = sc.nextLine().trim();
+        if(input.equals("0")) {
+            return;
+        }
         if(input.length() > 0)
         {
             doctorEntity.setRegistration(input);
@@ -523,6 +686,9 @@ public class AdministrationOperationsModule
         
         System.out.print("Enter Qualifications (blank if no change)> ");
         input = sc.nextLine().trim();
+        if(input.equals("0")) {
+            return;
+        }
         if(input.length() > 0)
         {
             doctorEntity.setQualifications(input);
@@ -542,6 +708,9 @@ public class AdministrationOperationsModule
             System.out.print("Enter Doctor Id> ");
             doctorId = sc.nextLong();
             sc.nextLine();
+            if(doctorId == 0) {
+                return;
+            }
             try {
                 doctorEntity = doctorEntityControllerRemote.retrieveDoctorEntityById(doctorId);
                 System.out.printf("Confirm Delete Doctor %s %s (Doctor ID: %d) (Enter 'Y' to Delete)> ", doctorEntity.getFirstName(), doctorEntity.getLastName(), doctorEntity.getDoctorId());
@@ -662,19 +831,55 @@ public class AdministrationOperationsModule
     private void doAddStaff()
     {
         Scanner sc = new Scanner(System.in);
-        StaffEntity newStaffEntity = new StaffEntity();
         
         System.out.println("*** CARS :: Administration Operation :: Staff Management :: Add Staff ***");
    
-        System.out.print("Enter First Name> ");
-        newStaffEntity.setFirstName(sc.nextLine().trim());
-        System.out.print("Enter Last Name> ");
-        newStaffEntity.setLastName(sc.nextLine().trim());
-        System.out.print("Enter Username> ");
-        newStaffEntity.setUsername(sc.nextLine().trim());
-        System.out.print("Enter Password> ");
-        newStaffEntity.setPassword(sc.nextLine().trim());
+        String firstName;
+        while (true) {
+            System.out.print("Enter First Name> ");
+            firstName = sc.nextLine();
+            if(firstName.equals("0")) {
+                return;
+            }
+            if(firstName.trim().length() > 0) {
+                break;
+            }
+        }
+        String lastName;
+        while (true) {
+            System.out.print("Enter First Name> ");
+            lastName = sc.nextLine();
+            if(lastName.equals("0")) {
+                return;
+            }
+            if(lastName.trim().length() > 0) {
+                break;
+            }
+        }
+        String username;
+        while (true) {
+            System.out.print("Enter Username > ");
+            username = sc.nextLine();
+            if(username.equals("0")) {
+                return;
+            }
+            if(username.trim().length() > 0) {
+                break;
+            }
+        }
         
+        String password;
+        while (true) {
+            System.out.print("Enter Password > ");
+            password = sc.nextLine().trim();
+            if(password.equals("0")) {
+                return;
+            }
+            if(password.trim().length() > 0) {
+                break;
+            }
+        }
+        StaffEntity newStaffEntity = new StaffEntity(firstName, lastName, username, password);
         Long newStaffEntityId = staffEntityControllerRemote.createNewStaffEntity(newStaffEntity);
         System.out.println("Patient has been added successfully!");
     }
@@ -687,8 +892,20 @@ public class AdministrationOperationsModule
         
         while (true) {
             StaffEntity staffEntity = new StaffEntity();
-            System.out.print("Enter Staff Id> ");
-            Long staffId = sc.nextLong();
+            Long staffId;
+            while (true) {
+                try {
+                    System.out.print("Enter Staff Id> ");
+                    staffId = sc.nextLong();
+                    sc.nextLine();
+                    if(staffId == 0) {
+                        return;
+                    }
+                    break;
+                } catch (Exception ex) {
+                    System.out.println("Please enter a valid integer.");
+                }
+            }
             try
             {
                 staffEntity = staffEntityControllerRemote.retrieveStaffByStaffId(staffId);
@@ -716,6 +933,9 @@ public class AdministrationOperationsModule
                 System.out.print("Enter StaffId> ");
                 try {
                     staffId = sc.nextLong();
+                    if(staffId == 0) {
+                        return;
+                    }
                     sc.nextLine();
                     break;
                 } catch (Exception ex) {
@@ -733,6 +953,9 @@ public class AdministrationOperationsModule
         
         System.out.print("Enter First Name (blank if no change)> ");
         input = sc.nextLine().trim();
+        if(input.equals("0")) {
+            return;
+        }
         if(input.length() > 0)
         {
             staffEntity.setFirstName(input);
@@ -740,6 +963,9 @@ public class AdministrationOperationsModule
         
         System.out.print("Enter Last Name (blank if no change)> ");
         input = sc.nextLine().trim();
+        if(input.equals("0")) {
+            return;
+        }
         if(input.length() > 0)
         {
             staffEntity.setLastName(input);
@@ -747,6 +973,9 @@ public class AdministrationOperationsModule
         
         System.out.print("Enter Username (blank if no change)> ");
         input = sc.nextLine().trim();
+        if(input.equals("0")) {
+            return;
+        }
         if(input.length() > 0)
         {
             staffEntity.setUsername(input);
@@ -754,6 +983,9 @@ public class AdministrationOperationsModule
         
         System.out.print("Enter Password (blank if no change)> ");
         input = sc.nextLine().trim();
+        if(input.equals("0")) {
+            return;
+        }
         if(input.length() > 0)
         {
             staffEntity.setPassword(input);
@@ -776,6 +1008,9 @@ public class AdministrationOperationsModule
                 try {
                 System.out.print("Enter StaffId> ");
                 staffId = sc.nextLong();
+                if(staffId.equals("0")) {
+                    return;
+                }
                 sc.nextLine();
                 break;
                 } catch (Exception ex) {

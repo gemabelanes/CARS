@@ -6,7 +6,6 @@
 package entity;
 
 import cars.xmladapters.DateAdapter;
-import cars.xmladapters.SQLTimeAdapter;
 import java.io.Serializable;
 import java.sql.Time;
 import java.util.Date;

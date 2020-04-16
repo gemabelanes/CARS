@@ -116,7 +116,6 @@ public class AMSWebService {
     public boolean doctorAvailableAtTime(@WebParam(name = "doctorEntity") DoctorEntity doctorEntity,
                                          @WebParam(name = "time")String time,
                                          @WebParam(name = "date")String date) throws ParseException {
-        System.err.println("DAAT runs till here");
         return doctorEntityController.doctorAvailableAtTime(doctorEntity, new Time(new SimpleDateFormat("HH:mm").parse(time).getTime()), new SimpleDateFormat("yyyy-MM-dd").parse(date));
     }
     

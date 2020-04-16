@@ -58,10 +58,11 @@ public class MainApp {
         
         
         while(true) {
-            System.out.println("*** Welcome to Clinic Appointment Registration System (CARS) ***\n");
+            System.out.println("*** Welcome to Clinic Appointment Registration System (CARS) ***");
+            System.out.println("Enter 0 at any point to return to previous menu.\n");
             System.out.println("1: Login");
             System.out.println("2: Exit\n");
-            Integer response = 0;
+            Integer response = -1;
             while(response < 1 || response > 2) {
                 System.out.print("> ");
                 response = sc.nextInt();
@@ -73,13 +74,13 @@ public class MainApp {
                     } catch (InvalidLoginException ex) {
                         System.out.println(ex);
                     }
-                } else if(response == 2) {
+                } else if(response == 2 || response == 0) {
                     break;
                 } else {
                     System.out.println("Invalid option. Please try again.");
                 }
             }
-            if(response == 2) {
+            if(response == 2 || response == 0) {
                 break;
             }
             sc.nextLine();
@@ -152,7 +153,7 @@ public class MainApp {
                     this.administrationOperationsModule = new AdministrationOperationsModule(staffEntityControllerRemote, patientEntityControllerRemote, doctorEntityControllerRemote, appointmentEntityControllerRemote, consultationEntityControllerRemote);
                     administrationOperationsModule.administrationMainMenu();
                 }
-                else if(response == 4)
+                else if(response == 4 || response == 0)
                 {
                     return;
                 }

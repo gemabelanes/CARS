@@ -21,15 +21,15 @@ import ws.client.PatientNotFoundException_Exception;
  *
  * @author gem
  */
-public class MainApp2 {
+public class MainApp {
     
     private PatientEntity currentPatientEntity;
-    private AppointmentOperationsModule1 appointmentOperationsModule;
+    private AppointmentOperationsModule appointmentOperationsModule;
 
-    public MainApp2() {
+    public MainApp() {
     }
     
-    public void runApp() throws ParseException, PatientNotFoundException, AppointmentNotFoundException_Exception, ParseException_Exception, PatientNotFoundException_Exception
+    public void runApp() throws ParseException_Exception
     {
         System.out.println("STARTING UP...\n");
         Scanner sc = new Scanner(System.in);
@@ -37,11 +37,12 @@ public class MainApp2 {
         
         while(true)
         {
-            System.out.println("*** Welcome to AMS Client ***\n");
+            System.out.println("*** Welcome to AMS Client ***");
+            System.out.println("Enter 0 at any point to return to previous menu.\n");
             System.out.println("1: Register");
             System.out.println("2: Login");
             System.out.println("3: Exit\n");
-            response = 0;
+            response = -1;
             
             while(response < 1 || response > 3)
             {
@@ -52,16 +53,15 @@ public class MainApp2 {
                 if(response == 1)
                 {
                     doRegister();
-                    System.out.println("Registration is successful!");
                 }
-                else if(response ==2)
+                else if(response == 2)
                 {
                     try
                     {
                         doLogin();
                         if(currentPatientEntity != null) {
                             System.out.println("Login successful!\n");
-                            this.appointmentOperationsModule = new AppointmentOperationsModule1(currentPatientEntity);
+                            this.appointmentOperationsModule = new AppointmentOperationsModule(currentPatientEntity);
                             menuMain();
                         } else {
                             System.out.println("Login failed");
@@ -72,7 +72,7 @@ public class MainApp2 {
                         System.out.println("Invalid login credential: " + ex.getMessage() + "\n");
                     }
                 }
-                else if(response == 3)
+                else if(response == 3 || response == 0)
                 {
                     break;
                 }
@@ -82,7 +82,7 @@ public class MainApp2 {
                 }
             }
             
-            if(response == 3)
+            if(response == 3 || response == 0)
             {
                 break;
             }
@@ -91,7 +91,7 @@ public class MainApp2 {
     }
     
     
-    private void menuMain() throws ParseException, PatientNotFoundException, AppointmentNotFoundException_Exception, ParseException_Exception, PatientNotFoundException_Exception
+    private void menuMain() throws ParseException_Exception
     {
         Scanner sc = new Scanner(System.in);
         Integer response = 0;
@@ -104,7 +104,7 @@ public class MainApp2 {
             System.out.println("2: Add Appointment");
             System.out.println("3: Cancel Appointment");
             System.out.println("4: Logout\n");
-            response = 0;
+            response = -1;
             
             while (response < 1 || response > 4)
             {
@@ -124,7 +124,7 @@ public class MainApp2 {
                 {
                     appointmentOperationsModule.cancelAppointment();
                 }
-                else if(response == 4)
+                else if(response == 4 || response == 0)
                 {
                     currentPatientEntity = null;
                     break;
@@ -135,7 +135,7 @@ public class MainApp2 {
                 }
             }
             
-            if(response == 4)
+            if(response == 0 || response == 4)
             {
                 break;
             }
@@ -248,9 +248,9 @@ public class MainApp2 {
         String password = "";
         
         System.out.println("*** AMS Client :: Login ***\n");
-        System.out.println("Enter Identity Number> ");
+        System.out.print("Enter Identity Number> ");
         identityNumber = sc.nextLine().trim();
-        System.out.println("Enter password> ");
+        System.out.print("Enter password> ");
         password = sc.nextLine().trim();
         
         if(identityNumber.length() > 0 && password.length() > 0)

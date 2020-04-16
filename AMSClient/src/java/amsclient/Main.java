@@ -31,7 +31,7 @@ public class Main {
     
     
     public static void main(String[] args) throws AppointmentNotFoundException_Exception, ParseException, PatientNotFoundException, ParseException_Exception, PatientNotFoundException_Exception {
-        MainApp2 mainApp = new MainApp2();
+        MainApp mainApp = new MainApp();
         mainApp.runApp();
     }
     

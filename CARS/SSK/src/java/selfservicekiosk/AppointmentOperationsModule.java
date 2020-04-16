@@ -62,7 +62,7 @@ public class AppointmentOperationsModule {
 
         while(true) {
             System.out.println("*** CARS :: Appointment Operation ***");
-            System.out.println("Enter 0 at any point to exit.");
+            System.out.println("Enter 0 to return to previous menu");
             System.out.println();
             System.out.println("1: View Patient Appointments");
             System.out.println("2: Add Appointment");
@@ -292,8 +292,6 @@ public class AppointmentOperationsModule {
 
     void cancelAppointment() {
         System.out.println("*** Self-Service Kiosk :: Cancel Appointment ***\n");
-        
-        System.out.println("STARTING UP...\n");
         
         Scanner sc = new Scanner(System.in);
         

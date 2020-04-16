@@ -82,7 +82,6 @@ public class RegistrationOperationModule {
         
         while(true) {
             System.out.println("*** CARS :: Registration Operation ***");
-            System.out.println("*Enter 0 at any point to terminate*");
             System.out.println();
             System.out.println("1: Register New Patient");
             System.out.println("2: Register Walk-In Consultation");
@@ -125,7 +124,7 @@ public class RegistrationOperationModule {
         while (true) {
             String ic;
             while (true) {
-                System.out.print("Enter Identity Number> ");
+                System.out.print("Enter Identity Number > ");
                 ic = sc.nextLine();
                 if(ic.equals("0")) {
                     return;
@@ -155,6 +154,9 @@ public class RegistrationOperationModule {
                 while (true) {
                     System.out.print("Enter First Name> ");
                     firstName = sc.nextLine();
+                    if(firstName.equals("0")) {
+                        return;
+                    }
                     if(firstName.trim().length() > 0) {
                         break;
                     }
@@ -163,6 +165,9 @@ public class RegistrationOperationModule {
                 while (true) {
                     System.out.print("Enter First Name> ");
                     lastName = sc.nextLine();
+                    if(lastName.equals("0")) {
+                        return;
+                    }
                     if(lastName.trim().length() > 0) {
                         break;
                     }
@@ -171,6 +176,9 @@ public class RegistrationOperationModule {
                 while (true) {
                     System.out.print("Enter gender > ");
                     gender = sc.nextLine();
+                    if(gender.equals("0")) {
+                        return;
+                    }
                     if(gender.trim().length() > 0) {
                         break;
                     }
@@ -181,15 +189,22 @@ public class RegistrationOperationModule {
                         System.out.print("Enter Age> ");
                         age = sc.nextInt();
                         sc.nextLine();
+                        if(age == 0) {
+                            return;
+                        }
                         break;
                     } catch (Exception ex) {
                         System.out.println("Please enter a valid integer.");
+                        sc.nextLine();
                     }
                 }
                 String phoneNumber;
                 while (true) {
                     System.out.print("Enter Phone Number> ");
                     phoneNumber = sc.nextLine();
+                    if(phoneNumber.equals("0")) {
+                        return;
+                    }
                     if(phoneNumber.trim().length() > 0) {
                         break;
                     }
@@ -198,6 +213,9 @@ public class RegistrationOperationModule {
                 while (true) {
                     System.out.print("Enter Address> ");
                     address = sc.nextLine();
+                    if(address.equals("0")) {
+                        return;
+                    }
                     if(address.trim().length() > 0) {
                         break;
                     }
@@ -240,7 +258,7 @@ public class RegistrationOperationModule {
                 System.out.printf("%-10s%-20s", doctor.getDoctorId(), "| DR." + doctor.getFullName());
                 System.out.println();
             }
-
+            System.out.println();
             int currMinutes = Integer.parseInt(new SimpleDateFormat("mm").format(tempRound.getTime()));
             if(currMinutes >= 30) {
                 tempRound.add(Calendar.HOUR_OF_DAY, 1);
@@ -288,7 +306,7 @@ public class RegistrationOperationModule {
                 }
                 System.out.println();
             }
-            
+            System.out.println();
             Scanner sc = new Scanner(System.in);
             DoctorEntity doctorEntity;
             Time firstFreeSlot = null;
@@ -296,7 +314,7 @@ public class RegistrationOperationModule {
                 try { 
                     long doctorId;
                     while(true) {
-                        System.out.print("Enter Doctor ID> ");
+                        System.out.print("Enter Doctor ID > ");
                         try {
                             doctorId = sc.nextLong();
                             sc.nextLine();
@@ -306,7 +324,7 @@ public class RegistrationOperationModule {
                             
                             break;
                         } catch (Exception ex) {
-                            System.out.println("Please enter an integer. (Enter 0 to return to Appointment Operations Menu)");
+                            System.out.println("Please enter an integer.");
                             sc.nextLine();
                         }
                     }
@@ -328,15 +346,13 @@ public class RegistrationOperationModule {
                         System.out.println("Doctor ID : " + doctorId + " has no available slot, please select another doctor");
                     }
                             
-                    //break;
                 } catch (DoctorNotFoundException ex) {
-                    System.out.println("Doctor ID does not exist! Please try again. (Enter 0 to return to Appointment Operations Menu)");
+                    System.out.println("Doctor ID does not exist! Please try again.");
                 }
             }
             
             PatientEntity patientEntity;
             while(true) {
-                //System.out.println("DEBUG HERE " + loggedInPatient);
                 try {
                     if(Objects.isNull(loggedInPatient) ) {
                         System.out.print("Enter Patient Identity Number> ");
@@ -346,7 +362,6 @@ public class RegistrationOperationModule {
                         }
                         patientEntity = patientEntityControllerRemote.retrievePatientEntityByIc(ic);
                     } else {
-                        //System.out.println("loggedPatient is not null" + Objects.isNull(loggedInPatient));
                         patientEntity = loggedInPatient;
                     }
                     
@@ -366,7 +381,7 @@ public class RegistrationOperationModule {
                     } else {
                         System.out.println("Patient IC : " + patientEntity.getIdentityNumber() + " already has a appointment/consultation for the day that clashes with all the available timings for doctor : " + doctorEntity.getFullName());
                         System.out.println("Please try again!\n");
-                        registerWalkInConsultation();
+                        return;
                         
                     }
                     //break;
@@ -410,9 +425,9 @@ public class RegistrationOperationModule {
 
         //today = Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant());
         // Actual date
-        //today = Calendar.getInstance().getTime();
+        today = Calendar.getInstance().getTime();
         // Fake date : Monday, 2020-05-11 14:00 hrs
-        today = new SimpleDateFormat("yyyy-MM-dd HH:mm").parse("2020-05-14 11:00");
+        //today = new SimpleDateFormat("yyyy-MM-dd HH:mm").parse("2020-05-14 11:00");
         todayString = sdf2.format(today);
         todayFormatted = sdf2.parse(todayString);
         
@@ -469,7 +484,7 @@ public class RegistrationOperationModule {
             try {
                 PatientEntity patientEntity;
                 if(Objects.isNull(loggedInPatient)) {
-                    System.out.print("Enter Patient Identity Number (Enter 0 to return to Appointment Operations Menu)> ");
+                    System.out.print("Enter Patient Identity Number > ");
                     String ic = sc.nextLine();
                     if(ic.equals("0")) {
                         return;
@@ -504,7 +519,7 @@ public class RegistrationOperationModule {
                 
                 while(true) {
                     try {
-                        System.out.print("Enter Appointment Id (Enter 0 to return to Appointment Operations Menu)> ");
+                        System.out.print("Enter Appointment Id > ");
                         int appointmentId = sc.nextInt();
                         if(appointmentId == 0) {
                             return;

@@ -261,9 +261,9 @@ public class RegistrationOperationModule
 
         //today = Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant());
         // Actual date
-        //today = Calendar.getInstance().getTime();
+        today = Calendar.getInstance().getTime();
         // Fake date : Monday, 2020-05-11 14:00 hrs
-        today = new SimpleDateFormat("yyyy-MM-dd HH:mm").parse("2020-05-14 11:00");
+        //today = new SimpleDateFormat("yyyy-MM-dd HH:mm").parse("2020-05-14 11:00");
         todayString = sdf2.format(today);
         todayFormatted = sdf2.parse(todayString);
         

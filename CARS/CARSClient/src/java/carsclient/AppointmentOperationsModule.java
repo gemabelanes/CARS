@@ -71,7 +71,7 @@ public class AppointmentOperationsModule {
             System.out.println("3: Cancel Appointment");
             System.out.println("4: Back");
             System.out.println();
-            Integer response = 0;
+            Integer response = -1;
             
             while (response < 1 || response > 4) {
                 System.out.print("> ");
@@ -84,7 +84,7 @@ public class AppointmentOperationsModule {
                     addAppointment();
                 } else if (response == 3) {
                     cancelAppointment();
-                } else if (response == 4) {
+                } else if (response == 4 || response == 0) {
                     return;
                 } else {
                     System.out.println("Invalid option, please try again!\n");
@@ -107,7 +107,7 @@ public class AppointmentOperationsModule {
             try {
                 PatientEntity patientEntity;
                 if(Objects.isNull(loggedInPatient)) {
-                    System.out.print("Enter Patient Identity Number (Enter 0 to return to Appointment Operations Menu)> ");
+                    System.out.print("Enter Patient Identity Number > ");
                     String ic = sc.nextLine();
                     if(ic.equals("0")) {
                         break;
@@ -116,6 +116,7 @@ public class AppointmentOperationsModule {
                 } else {
                     patientEntity = patientEntityControllerRemote.retrievePatientEntityByIc(loggedInPatient.getIdentityNumber());
                 }
+                System.out.println();
                 List<AppointmentEntity> patientAppointments = appointmentEntityControllerRemote.retrieveAppointmentsByPatient(patientEntity);
                 
                 if(patientAppointments.size() == 0) {
@@ -132,10 +133,11 @@ public class AppointmentOperationsModule {
                 System.out.println();
                 break;
             } catch (PatientNotFoundException ex) {
-                System.out.println("Patient record not found, please try again! (Enter 0 to return to Appointment Operations Menu)");
+                System.out.println("Patient record not found, please try again! ");
             }
            
        }
+       System.out.println();
        
     }
 
@@ -159,7 +161,7 @@ public class AppointmentOperationsModule {
             try { 
                 long doctorId;
                 while(true) {
-                    System.out.print("Enter Doctor ID (Enter 0 to return to Appointment Operations Menu)> ");
+                    System.out.print("Enter Doctor ID > ");
                     try {
                         doctorId = sc.nextLong();
                         if(doctorId == 0 ) {
@@ -168,14 +170,14 @@ public class AppointmentOperationsModule {
                         sc.nextLine();
                         break;
                     } catch (Exception ex) {
-                        System.out.println("Please enter an integer. (Enter 0 to return to Appointment Operations Menu)");
+                        System.out.println("Please enter an integer. ");
                         sc.nextLine();
                     }
                 }
                 doctorEntity = doctorEntityControllerRemote.retrieveDoctorEntityById(doctorId);
                 break;
             } catch (DoctorNotFoundException ex) {
-                System.out.println("Doctor ID does not exist! Please try again. (Enter 0 to return to Appointment Operations Menu)");
+                System.out.println("Doctor ID does not exist! Please try again. ");
             }
         }
       
@@ -184,7 +186,7 @@ public class AppointmentOperationsModule {
         while(true) {
             while(true) {
                 try {
-                    System.out.print("Enter Date (Enter 0 to return to Appointment Operations Menu)> ");
+                    System.out.print("Enter Date > ");
                     String selectedTime = sc.nextLine().trim();
                     if(selectedTime.equals("0")) {
                         return;
@@ -193,14 +195,15 @@ public class AppointmentOperationsModule {
                     Calendar tempDow = Calendar.getInstance();
                     tempDow.setTime(selectedDate);
                     int dayOfWeek = tempDow.get(Calendar.DAY_OF_WEEK);
+                    System.out.println();
                     //System.out.println("DayOfWeek is " + new SimpleDateFormat("EEEE").format(selectedDate));
                     if(dayOfWeek == 7 || dayOfWeek == 1) {
-                        System.out.println("The clinic is closed on weekends, please enter another date. (Enter 0 to return to Appointment Operations Menu)");
+                        System.out.println("The clinic is closed on weekends, please enter another date. ");
                     } else {
                         break;
                     }
                 } catch (ParseException ex) {
-                    System.out.println("Invalid Date Format, enter in yyyy-mm-dd. (Enter 0 to return to Appointment Operations Menu)");
+                    System.out.println("Invalid Date Format, enter in yyyy-mm-dd. ");
                     //Logger.getLogger(ReservationOperationModule.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
@@ -216,7 +219,7 @@ public class AppointmentOperationsModule {
         tempDow.setTime(selectedDate);
         int dayOfWeek = tempDow.get(Calendar.DAY_OF_WEEK);
         ArrayList<Time> timeSlots = new ArrayList<>();
-        //SimpleDateFormat sdf3 = new SimpleDateFormat("HH:mm");
+ 
         try {
             Date openingHr = sdf3.parse("08:30");
             Calendar tempHr = Calendar.getInstance();
@@ -254,15 +257,7 @@ public class AppointmentOperationsModule {
             } catch (ParseException ex) {
                 System.out.println("Error parsing Friday hours");
             }
-        }
-        /*
-        List<AppointmentEntity> doctorAppointments = appointmentEntityControllerRemote.retrieveAppointmentsByDoctorDate(doctorEntity, selectedDate);
-        for(AppointmentEntity ae : doctorAppointments) {
-            if(timeSlots.contains(ae.getTime())) {
-                timeSlots.remove(ae.getTime());
-            }
-        }*/
-        
+        }        
         
         while (true) {
             try {
@@ -271,7 +266,8 @@ public class AppointmentOperationsModule {
                     System.out.print(sdf3.format(time) + " ");
                 }
                 System.out.println();
-                System.out.print("Enter Time (Enter 0 to return to Appointment Operations Menu)> ");
+                System.out.println();
+                System.out.print("Enter Time > ");
                 String sTime = sc.nextLine().trim();
                 if(sTime.equals("0")) {
                     return;
@@ -279,7 +275,7 @@ public class AppointmentOperationsModule {
                 Time selectedTime = new Time(sdf3.parse(sTime).getTime());
                 if(timeSlots.contains(selectedTime)) {
                     while (true) {
-                        System.out.print("Enter Patient Identity Number (Enter 0 to return to Appointment Operations Menu)> ");
+                        System.out.print("Enter Patient Identity Number > ");
                         String patientIc = sc.nextLine();
                         if(patientIc.equals("0")) {
                             return;
@@ -297,17 +293,17 @@ public class AppointmentOperationsModule {
                                 
                             }
                         } catch (PatientNotFoundException ex) {
-                            System.out.println("Patient IC : " + patientIc + " does not exist! Please try again. (Enter 0 to return to Appointment Operations Menu)");
+                            System.out.println("Patient IC : " + patientIc + " does not exist! Please try again. ");
                         } catch (CreateAppointmentException ex) {
                             System.out.println("Error creating new appointment");
                         }
                     }
                     break;
                 } else {
-                    System.out.println("Please enter a valid option. (Enter 0 to return to Appointment Operations Menu)");
+                    System.out.println("Please enter a valid option. ");
                 }
             } catch (ParseException ex) {
-                System.out.println("Invalid Time Format, enter in hh:mm . (Enter 0 to return to Appointment Operations Menu)");
+                System.out.println("Invalid Time Format, enter in hh:mm. ");
             }
         } 
     }
@@ -321,7 +317,7 @@ public class AppointmentOperationsModule {
             try {
                 PatientEntity patientEntity;
                 if(Objects.isNull(loggedInPatient)) {
-                    System.out.print("Enter Patient Identity Number (Enter 0 to return to Appointment Operations Menu)> ");
+                    System.out.print("Enter Patient Identity Number > ");
                     String ic = sc.nextLine();
                     if(ic.equals("0")) {
                         return;
@@ -330,6 +326,7 @@ public class AppointmentOperationsModule {
                 } else {
                     patientEntity = loggedInPatient;
                 }
+                System.out.println();
                 List<AppointmentEntity> patientAppointments = appointmentEntityControllerRemote.retrieveAppointmentsByPatient(patientEntity);
                 
                 if(patientAppointments.size() == 0) {
@@ -348,7 +345,7 @@ public class AppointmentOperationsModule {
                 
                 while(true) {
                     try {
-                        System.out.print("Enter Appointment Id (Enter 0 to return to Appointment Operations Menu)> ");
+                        System.out.print("Enter Appointment Id > ");
                         int appointmentId = sc.nextInt();
                         if(appointmentId == 0) {
                             return;
@@ -364,13 +361,14 @@ public class AppointmentOperationsModule {
                             }
                         }
                     } catch (AppointmentNotFoundException ex) {
-                        System.out.println("Appointment does not exist! Please try again. (Enter 0 to return to Appointment Operations Menu)");
+                        System.out.println("Appointment does not exist! Please try again.");
                     }
                     break;
                 } 
+                System.out.println();
                 break;
             } catch (PatientNotFoundException ex) {
-                System.out.println("Patient record not found, please try again! (Enter 0 to return to Appointment Operations Menu)");
+                System.out.println("Patient record not found, please try again!");
             }
            
        }     
